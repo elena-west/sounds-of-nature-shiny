@@ -1,0 +1,140 @@
+---
+title: "confidence_thresholds"
+output: html_document
+---
+
+# Code mostly from BirdNET Raven Guide and modified for our threshold needs and looping requirement.
+
+```{r}
+
+# set working directory
+
+setwd(dir = "Z:/CFANS_fwcb_elwest_westlab/Project Folders/Bioacoustics Phase ll")
+
+# importing and variables to store common name and different threshold values 
+
+library(stringr)
+common_name_list = list()
+t50_list = list()
+t55_list = list()
+t60_list = list()
+t65_list = list()
+t70_list = list()
+t75_list = list()
+t80_list = list()
+t85_list = list()
+t90_list = list()
+t95_list = list()
+
+# looping through folder containing selection tables
+
+for (i in 1:length(list.files("/CFANS_fwcb_elwest_westlab/Project Folders/Bioacoustics Phase ll/2025/Validation/Finalized_Threshold_Tables"))) {
+  
+  filename = list.files("/CFANS_fwcb_elwest_westlab/Project Folders/Bioacoustics Phase ll/2025/Validation/Finalized_Threshold_Tables")[i]
+  path = paste0("/CFANS_fwcb_elwest_westlab/Project Folders/Bioacoustics Phase ll/2025/Validation/Finalized_Threshold_Tables/", filename)
+  table <- read.table(path, sep = "\t", header = TRUE)
+  
+  # make sure Valid column has only 0/1; if other values, then skip file
+  
+  if (any((table[, "Valid"] %in% c(0, 1)) == FALSE) == TRUE) {
+    msg = paste0(filename, " has non-0/1 values in the Valid column! Skipping this file.")
+    print(msg)
+    print(table[, "Valid"])
+    next
+  }
+  
+  # extract the species common name from the selection table file name
+  
+  common_name = str_replace_all(str_sub(filename, 1, -5), "_", " ")
+  common_name_list[[i]] = common_name
+  
+  # extract the numeric score from the file name:
+  table$Score <- as.numeric(substr(table$Begin.File, 1, 5))
+  
+  # fit the logistic regression model:
+  model <- glm(Valid ~ Score, family = "binomial", data = table)
+  
+  # plot the individual points (x = Score, y = Valid):
+  plot(Valid~Score, data=table, xlim=c(0,1), pch=16,
+       col=rgb(0,0,0,.3))
+  # add the modeled regression relationship (a curve):
+  curve(predict(model, data.frame(Score = x), type = "response"),
+        add = TRUE, col = "red", lwd = 2)
+  
+  # compute score threshold for probability p of correct prediction:
+  p95 <- 0.95 # your desired p (probability of true positive)
+  score_threshold_95 <- (log(p95/(1-p95))-model$coefficients[1]) /
+    model$coefficients[2]
+  p90 <- 0.90
+  score_threshold_90 <- (log(p90/(1-p90))-model$coefficients[1]) /
+    model$coefficients[2]
+  p85 <- 0.85
+  score_threshold_85 <- (log(p85/(1-p85))-model$coefficients[1]) /
+    model$coefficients[2]
+  p80 <- 0.80
+  score_threshold_80 <- (log(p80/(1-p80))-model$coefficients[1]) /
+    model$coefficients[2]
+  p75 <- 0.75
+  score_threshold_75 <- (log(p75/(1-p75))-model$coefficients[1]) /
+    model$coefficients[2]
+  p70 <- 0.70
+  score_threshold_70 <- (log(p70/(1-p70))-model$coefficients[1]) /
+    model$coefficients[2]
+  p65 <- 0.65
+  score_threshold_65 <- (log(p65/(1-p65))-model$coefficients[1]) /
+    model$coefficients[2]
+  p60 <- 0.60
+  score_threshold_60 <- (log(p60/(1-p60))-model$coefficients[1]) /
+    model$coefficients[2]
+  p55 <- 0.55
+  score_threshold_55 <- (log(p55/(1-p55))-model$coefficients[1]) /
+    model$coefficients[2]
+  p50 <- 0.5
+  score_threshold_50 <- (log(p50/(1-p50))-model$coefficients[1]) /
+    model$coefficients[2]
+  
+  # checking if any values below 0.25; if yes, defaulted to 0.25
+  
+  if (score_threshold_95 < 0.25) {score_threshold_95 = 0.25}
+  if (score_threshold_90 < 0.25) {score_threshold_90 = 0.25}
+  if (score_threshold_85 < 0.25) {score_threshold_85 = 0.25}
+  if (score_threshold_80 < 0.25) {score_threshold_80 = 0.25}
+  if (score_threshold_75 < 0.25) {score_threshold_75 = 0.25}
+  if (score_threshold_70 < 0.25) {score_threshold_70 = 0.25}
+  if (score_threshold_65 < 0.25) {score_threshold_65 = 0.25}
+  if (score_threshold_60 < 0.25) {score_threshold_60 = 0.25}
+  if (score_threshold_55 < 0.25) {score_threshold_55 = 0.25}
+  if (score_threshold_50 < 0.25) {score_threshold_50 = 0.25}
+  
+  # adding threshold values to list variables created earlier
+  
+  t50_list[[i]] = score_threshold_50[[1]]
+  t55_list[[i]] = score_threshold_55[[1]]
+  t60_list[[i]] = score_threshold_60[[1]]
+  t65_list[[i]] = score_threshold_65[[1]]
+  t70_list[[i]] = score_threshold_70[[1]]
+  t75_list[[i]] = score_threshold_75[[1]]
+  t80_list[[i]] = score_threshold_80[[1]]
+  t85_list[[i]] = score_threshold_85[[1]]
+  t90_list[[i]] = score_threshold_90[[1]]
+  t95_list[[i]] = score_threshold_95[[1]]
+}
+
+# after looping is complete, creating table with all values and saving as csv file
+
+threshold_table = data.frame(`Common Name` = unlist(common_name_list),
+                             t50 = unlist(t50_list),
+                             t55 = unlist(t55_list),
+                             t60 = unlist(t60_list),
+                             t65 = unlist(t65_list),
+                             t70 = unlist(t70_list),
+                             t75 = unlist(t75_list),
+                             t80 = unlist(t80_list),
+                             t85 = unlist(t85_list),
+                             t90 = unlist(t90_list),
+                             t95 = unlist(t95_list)
+                             )
+
+write.csv(threshold_table, "threshold_table.csv", row.names = FALSE)
+```
+

@@ -1,0 +1,58 @@
+Common Name,Confidence,"Number of Instances, 50% Confidence","Number of Instances, 55% Confidence","Number of Instances, 60% Confidence","Number of Instances, 65% Confidence","Number of Instances, 70% Confidence","Number of Instances, 75% Confidence","Number of Instances, 80% Confidence","Number of Instances, 85% Confidence","Number of Instances, 90% Confidence","Number of Instances, 95% Confidence",Total Instances,Rare
+Alder Flycatcher,0.7028,2.0,1.0,2.0,0.0,0.0,0.0,0.0,1.0,0.0,1.0,TBD,no
+American Bittern,0.9585,4.0,5.0,3.0,6.0,2.0,2.0,3.0,1.0,1.0,0.0,TBD,no
+American Goldfinch,0.9517,0.0,0.0,0.0,0.0,0.0,0.0,0.0,3.0,9.0,41.0,TBD,no
+American Kestrel,0.4803,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,1.0,0.0,TBD,no
+American Robin,0.8935,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,4.0,7.0,TBD,no
+American Woodcock,0.9421,0.0,2.0,0.0,0.0,0.0,0.0,1.0,0.0,1.0,2.0,TBD,no
+Baltimore Oriole,0.2590,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,TBD,no
+Barn Swallow,0.9444,0.0,0.0,0.0,0.0,0.0,18.0,55.0,42.0,56.0,62.0,TBD,no
+Barred Owl,0.7392,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,TBD,no
+Belted Kingfisher,0.3982,,,,,,,,,,,NA,no
+Black-billed Cuckoo,0.9232,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,TBD,no
+Black-throated Green Warbler,0.3744,,,,,,,,,,,NA,no
+Blackpoll Warbler,0.5317,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,2.0,1.0,TBD,no
+Blue Grosbeak,0.2697,,,,,,,,,,,NA,no
+Blue-winged Warbler,0.6892,2.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,2.0,0.0,TBD,no
+Brown Creeper,0.5801,,,,,,,,,,,NA,no
+Brown Thrasher,0.8061,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,TBD,no
+Brown-headed Cowbird,0.9903,0.0,0.0,0.0,0.0,0.0,0.0,8.0,28.0,31.0,92.0,TBD,no
+Canada Goose,0.9390,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,182.0,TBD,no
+Cedar Waxwing,0.9733,0.0,0.0,0.0,0.0,0.0,2.0,2.0,0.0,3.0,4.0,TBD,no
+Common Loon,0.8601,0.0,1.0,0.0,1.0,1.0,2.0,0.0,0.0,0.0,0.0,TBD,no
+Common Raven,0.2738,,,,,,,,,,,NA,no
+Common Yellowthroat,0.4782,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,23.0,TBD,no
+Dickcissel,0.9061,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,24.0,TBD,no
+Eastern Bluebird,0.9679,5.0,1.0,3.0,0.0,2.0,1.0,0.0,2.0,1.0,2.0,TBD,no
+Eastern Meadowlark,0.7310,0.0,0.0,0.0,0.0,15.0,7.0,5.0,3.0,3.0,1.0,TBD,no
+Eastern Wood-Pewee,0.3137,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,2.0,TBD,no
+Golden-winged Warbler,0.8984,4.0,6.0,5.0,3.0,3.0,6.0,6.0,5.0,4.0,1.0,TBD,no
+Great Crested Flycatcher,0.7194,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,2.0,TBD,no
+Great Horned Owl,0.7181,,,,,,,,,,,NA,no
+Green Heron,0.9373,0.0,0.0,0.0,0.0,2.0,0.0,0.0,1.0,2.0,5.0,TBD,no
+Indigo Bunting,0.3813,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,3.0,TBD,no
+Killdeer,0.9993,0.0,0.0,0.0,0.0,0.0,0.0,3.0,39.0,52.0,97.0,TBD,no
+Lark Sparrow,0.8504,7.0,1.0,2.0,2.0,1.0,1.0,0.0,0.0,0.0,1.0,TBD,no
+Mallard,0.8804,0.0,0.0,0.0,1.0,11.0,10.0,9.0,7.0,13.0,14.0,TBD,no
+Marsh Wren,0.5328,,,,,,,,,,,1,yes
+Mourning Dove,0.5349,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,3.0,7.0,TBD,no
+Peregrine Falcon,0.2964,,,,,,,,,,,NA,no
+Purple Martin,0.6748,0.0,0.0,0.0,1.0,0.0,1.0,0.0,0.0,0.0,0.0,TBD,no
+Red-headed Woodpecker,0.4097,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,TBD,no
+Red-shouldered Hawk,0.5180,,,,,,,,,,,NA,no
+Red-tailed Hawk,0.5793,,,,,,,,,,,NA,no
+Red-winged Blackbird,0.7126,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,40.0,TBD,no
+Ring-necked Pheasant,0.9999,0.0,0.0,0.0,0.0,0.0,16.0,185.0,218.0,299.0,1642.0,TBD,no
+Rose-breasted Grosbeak,0.4796,0.0,0.0,0.0,0.0,2.0,2.0,1.0,0.0,0.0,0.0,TBD,no
+Sandhill Crane,0.5438,6.0,6.0,3.0,1.0,1.0,2.0,0.0,2.0,0.0,0.0,TBD,no
+Savannah Sparrow,0.8409,0.0,0.0,8.0,0.0,1.0,0.0,2.0,2.0,4.0,0.0,TBD,no
+Song Sparrow,0.4759,,,,,,,,,,,NA,no
+Sora,0.9986,22.0,16.0,18.0,17.0,18.0,17.0,18.0,19.0,25.0,236.0,TBD,no
+Tennessee Warbler,0.4418,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,2.0,TBD,no
+Trumpeter Swan,0.8672,,,,,,,,,,,NA,no
+Upland Sandpiper,0.5138,,,,,,,,,,,NA,no
+Virginia Rail,0.9951,6.0,7.0,2.0,2.0,3.0,4.0,9.0,5.0,26.0,37.0,TBD,no
+White-breasted Nuthatch,0.2507,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,TBD,no
+Wood Duck,0.4973,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,TBD,no
+Yellow Warbler,0.7670,0.0,0.0,0.0,0.0,0.0,0.0,0.0,2.0,9.0,1.0,TBD,no
+Yellow-billed Cuckoo,0.4944,,,,,,,,,,,NA,no

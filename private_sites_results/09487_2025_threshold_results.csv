@@ -1,0 +1,28 @@
+Common Name,Confidence,"Number of Instances, 50% Confidence","Number of Instances, 55% Confidence","Number of Instances, 60% Confidence","Number of Instances, 65% Confidence","Number of Instances, 70% Confidence","Number of Instances, 75% Confidence","Number of Instances, 80% Confidence","Number of Instances, 85% Confidence","Number of Instances, 90% Confidence","Number of Instances, 95% Confidence",Total Instances,Rare
+American Bittern,0.7408,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,TBD,no
+American Goldfinch,0.8986,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,13.0,TBD,no
+American Woodcock,0.6104,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,TBD,no
+Barn Swallow,0.9643,0.0,0.0,0.0,0.0,0.0,13.0,46.0,49.0,64.0,116.0,TBD,no
+Black-billed Cuckoo,0.9855,0.0,1.0,0.0,2.0,0.0,2.0,3.0,1.0,1.0,0.0,TBD,no
+Black-capped Chickadee,0.3597,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,TBD,no
+Blackpoll Warbler,0.6729,0.0,0.0,0.0,0.0,0.0,0.0,4.0,5.0,4.0,3.0,TBD,no
+Blue Grosbeak,0.4844,,,,,,,,,,,NA,no
+Brown-headed Cowbird,0.9999,0.0,0.0,0.0,0.0,0.0,0.0,15.0,37.0,49.0,320.0,TBD,no
+Canada Goose,0.8835,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,35.0,TBD,no
+Common Raven,0.7952,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,TBD,no
+Common Yellowthroat,0.9912,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1158.0,TBD,no
+Dickcissel,0.9990,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,6486.0,TBD,no
+Eastern Meadowlark,0.2865,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,TBD,no
+Killdeer,0.8278,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,2.0,7.0,TBD,no
+Lark Sparrow,0.7441,2.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,1.0,1.0,TBD,no
+Mourning Dove,0.3640,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,TBD,no
+Purple Martin,0.7296,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,TBD,no
+Red-winged Blackbird,0.3900,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,TBD,no
+Ring-necked Pheasant,0.9997,0.0,0.0,0.0,0.0,0.0,11.0,107.0,130.0,146.0,832.0,TBD,no
+Sandhill Crane,0.6503,2.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,1.0,0.0,TBD,no
+Savannah Sparrow,0.4231,0.0,0.0,2.0,1.0,2.0,1.0,0.0,0.0,0.0,0.0,TBD,no
+Song Sparrow,0.2646,,,,,,,,,,,NA,no
+Sora,0.3399,0.0,0.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,TBD,no
+Trumpeter Swan,0.9825,2.0,3.0,2.0,5.0,0.0,0.0,0.0,0.0,0.0,0.0,TBD,no
+Upland Sandpiper,0.7847,0.0,0.0,1.0,0.0,0.0,0.0,1.0,1.0,0.0,0.0,TBD,no
+Virginia Rail,0.4693,,,,,,,,,,,NA,no

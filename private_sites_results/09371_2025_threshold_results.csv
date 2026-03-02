@@ -1,0 +1,24 @@
+Common Name,Confidence,"Number of Instances, 50% Confidence","Number of Instances, 55% Confidence","Number of Instances, 60% Confidence","Number of Instances, 65% Confidence","Number of Instances, 70% Confidence","Number of Instances, 75% Confidence","Number of Instances, 80% Confidence","Number of Instances, 85% Confidence","Number of Instances, 90% Confidence","Number of Instances, 95% Confidence",Total Instances,Rare
+American Crow,0.9888,0.0,0.0,0.0,0.0,0.0,0.0,15.0,24.0,38.0,291.0,TBD,no
+American Goldfinch,0.5215,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,4.0,3.0,TBD,no
+Barred Owl,1.0000,12.0,11.0,11.0,7.0,11.0,12.0,9.0,42.0,117.0,0.0,TBD,no
+Black-capped Chickadee,0.9251,0.0,0.0,0.0,0.0,0.0,0.0,76.0,95.0,112.0,111.0,TBD,no
+Blue Jay,0.9951,0.0,0.0,0.0,0.0,0.0,0.0,12.0,56.0,85.0,2365.0,TBD,no
+Broad-winged Hawk,0.9761,9.0,1.0,3.0,2.0,0.0,0.0,0.0,0.0,0.0,0.0,TBD,no
+Brown Creeper,0.3750,,,,,,,,,,,NA,no
+Eastern Bluebird,0.9947,2.0,1.0,1.0,2.0,1.0,2.0,9.0,3.0,5.0,20.0,TBD,no
+Eastern Whip-poor-will,0.3050,0.0,0.0,0.0,0.0,0.0,0.0,0.0,2.0,0.0,0.0,TBD,no
+Eastern Wood-Pewee,0.9846,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,5494.0,TBD,no
+Field Sparrow,0.5828,,,,,,,,,,,NA,no
+Great Crested Flycatcher,0.9995,0.0,0.0,0.0,0.0,0.0,0.0,0.0,530.0,1413.0,5881.0,TBD,no
+Great Horned Owl,0.7832,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,TBD,no
+House Wren,0.6829,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,18.0,TBD,no
+Nashville Warbler,0.4697,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,TBD,no
+Northern Cardinal,0.9976,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,487.0,TBD,no
+Red-headed Woodpecker,0.9258,1.0,5.0,0.0,0.0,0.0,0.0,1.0,0.0,1.0,2.0,TBD,no
+Red-shouldered Hawk,0.5108,,,,,,,,,,,NA,no
+Red-tailed Hawk,0.6994,,,,,,,,,,,NA,no
+Red-winged Blackbird,0.5128,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,132.0,TBD,no
+Trumpeter Swan,0.9997,0.0,0.0,0.0,6.0,2.0,0.0,0.0,0.0,0.0,0.0,TBD,no
+Warbling Vireo,0.8892,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,19.0,TBD,no
+White-breasted Nuthatch,0.9926,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,3894.0,TBD,no

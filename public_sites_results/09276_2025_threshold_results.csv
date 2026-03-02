@@ -1,0 +1,53 @@
+Common Name,Confidence,"Number of Instances, 50% Confidence","Number of Instances, 55% Confidence","Number of Instances, 60% Confidence","Number of Instances, 65% Confidence","Number of Instances, 70% Confidence","Number of Instances, 75% Confidence","Number of Instances, 80% Confidence","Number of Instances, 85% Confidence","Number of Instances, 90% Confidence","Number of Instances, 95% Confidence",Total Instances,Rare
+American Crow,0.9852,0.0,0.0,0.0,0.0,0.0,0.0,4.0,5.0,11.0,109.0,TBD,no
+American Goldfinch,0.2926,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,TBD,no
+American Redstart,0.6359,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,4.0,10.0,TBD,no
+American Robin,0.7444,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,5.0,3.0,TBD,no
+American Woodcock,0.4407,,,,,,,,,,,NA,no
+Baltimore Oriole,0.6302,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,22.0,TBD,no
+Barred Owl,0.9999,22.0,15.0,25.0,24.0,25.0,31.0,41.0,137.0,373.0,0.0,TBD,no
+Belted Kingfisher,0.9857,0.0,0.0,1.0,0.0,2.0,1.0,0.0,1.0,0.0,0.0,TBD,no
+Black-and-white Warbler,0.9705,0.0,6.0,33.0,29.0,23.0,24.0,28.0,23.0,31.0,46.0,TBD,no
+Black-billed Cuckoo,0.9999,3.0,4.0,6.0,5.0,4.0,9.0,14.0,10.0,90.0,0.0,TBD,no
+Black-capped Chickadee,0.8075,0.0,0.0,0.0,0.0,0.0,0.0,29.0,26.0,30.0,17.0,TBD,no
+Black-throated Blue Warbler,0.6715,,,,,,,,,,,NA,no
+Black-throated Green Warbler,0.6025,,,,,,,,,,,NA,no
+Blackburnian Warbler,0.6791,1.0,1.0,1.0,0.0,1.0,1.0,0.0,0.0,0.0,0.0,TBD,no
+Blackpoll Warbler,0.9135,0.0,0.0,0.0,0.0,0.0,0.0,7.0,15.0,28.0,19.0,TBD,no
+Blue Jay,0.9690,0.0,0.0,0.0,0.0,0.0,0.0,15.0,36.0,39.0,1000.0,TBD,no
+Blue-winged Warbler,0.5987,0.0,1.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,TBD,no
+Broad-winged Hawk,0.9974,2.0,0.0,0.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,TBD,no
+Brown-headed Cowbird,0.8711,0.0,0.0,0.0,0.0,0.0,0.0,0.0,2.0,0.0,2.0,TBD,no
+Canada Goose,0.9749,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,96.0,TBD,no
+Canada Warbler,0.9580,3.0,1.0,2.0,2.0,1.0,2.0,1.0,1.0,1.0,2.0,TBD,no
+Cedar Waxwing,0.6393,0.0,0.0,0.0,0.0,0.0,1.0,1.0,0.0,0.0,1.0,TBD,no
+Common Loon,0.9875,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,0.0,0.0,TBD,no
+Common Raven,0.9718,5.0,8.0,4.0,3.0,8.0,8.0,8.0,17.0,6.0,0.0,TBD,no
+Common Yellowthroat,0.2971,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,TBD,no
+Eastern Bluebird,0.7895,1.0,0.0,0.0,2.0,0.0,0.0,0.0,0.0,1.0,0.0,TBD,no
+Eastern Phoebe,0.6588,1.0,2.0,0.0,0.0,2.0,0.0,0.0,0.0,0.0,0.0,TBD,no
+Eastern Wood-Pewee,0.9921,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,4938.0,TBD,no
+Golden-winged Warbler,0.9721,0.0,0.0,1.0,1.0,0.0,1.0,0.0,0.0,1.0,4.0,TBD,no
+Great Crested Flycatcher,0.9990,0.0,0.0,0.0,0.0,0.0,0.0,0.0,151.0,451.0,1082.0,TBD,no
+Great Horned Owl,0.8846,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,TBD,no
+Hooded Warbler,0.6174,,,,,,,,,,,NA,no
+Mallard,0.3963,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,TBD,no
+Mourning Dove,0.4925,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,11.0,TBD,no
+Nashville Warbler,0.3400,,,,,,,,,,,NA,no
+Northern Cardinal,0.7580,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,47.0,TBD,no
+Ovenbird,0.9996,0.0,0.0,0.0,0.0,0.0,0.0,1004.0,1719.0,2617.0,41355.0,TBD,no
+Peregrine Falcon,0.7605,,,,,,,,,,,NA,no
+Red-eyed Vireo,0.9290,0.0,1.0,5.0,9.0,6.0,7.0,12.0,15.0,17.0,963.0,TBD,no
+Red-headed Woodpecker,0.8134,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,TBD,no
+Red-shouldered Hawk,0.6620,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,TBD,no
+Red-tailed Hawk,0.5254,,,,,,,,,,,NA,no
+Rose-breasted Grosbeak,0.9981,0.0,0.0,0.0,0.0,9.0,25.0,19.0,20.0,65.0,19.0,TBD,no
+Sandhill Crane,0.9926,22.0,18.0,20.0,16.0,15.0,15.0,15.0,25.0,31.0,69.0,TBD,no
+Sora,0.2966,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,TBD,no
+Tennessee Warbler,0.9876,0.0,0.0,0.0,0.0,0.0,0.0,0.0,9.0,27.0,271.0,TBD,no
+Trumpeter Swan,0.9010,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,TBD,no
+Veery,0.9997,0.0,0.0,0.0,0.0,0.0,0.0,1532.0,2042.0,2651.0,12990.0,TBD,no
+White-breasted Nuthatch,0.7284,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,10.0,TBD,no
+Wood Duck,0.4792,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,TBD,no
+Yellow Warbler,0.2560,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,TBD,no
+Yellow-billed Cuckoo,0.9805,2.0,0.0,0.0,0.0,1.0,1.0,0.0,2.0,0.0,0.0,TBD,no

@@ -1,0 +1,404 @@
+
+/* biodiversity_styles.css */
+
+/* Loading fonts from Google Fonts */
+
+@import url('https://fonts.googleapis.com/css2?family=Libre+Franklin:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400..700;1,400..700&display=swap');
+
+/* Main app size */
+
+body {
+  min-width: 1200px;
+  max-width: 1200px;
+  height: auto;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Main app header (title panel text) */
+
+.app_title {
+  font-family: "Libre Franklin", sans-serif;
+  font-weight: bold;
+  font-size: 28px;
+  color: #264037;
+}
+
+/* Side panel box and text */
+
+#sidebar {
+  background-color: #8fcdcc;
+  border-color: #19807e;
+  font-family: "Libre Franklin", sans-serif;
+  font-weight: light;
+  font-size: 16px;
+  color: #264037;
+}
+
+/* Headers within side panel */
+
+.sidebar_header {
+  font-family: "Libre Franklin", sans-serif;
+  font-weight: bold;
+  font-size: 18px;
+  color: #264037;
+}
+
+.sidebar_header_text {
+  font-family: "Libre Franklin", sans-serif;
+  font-weight: bold;
+  font-style: italic;
+  font-size: 18px;
+  color: #264037;
+}
+
+/* Default appearance of non-active tab when not interacting */
+
+.nav-tabs > li > a {
+  background-color: #f3f3ed;
+  border-color: #264037;
+  font-family: "Libre Franklin", sans-serif;
+  font-weight: bold;
+  font-size: 18px;
+  color: #264037;
+}
+
+/* Appearance of non-active tab when hovering */
+
+.nav-tabs > li > a:hover {
+  background-color: #ff6b00;
+  border-color: #264037;
+  font-family: "Libre Franklin", sans-serif;
+  font-weight: bold;
+  font-size: 18px;
+  color: #ffe091;
+}
+
+/* Appearance of non-active tab during duration of click */
+
+.nav-tabs > li > a:focus {
+  background-color: #bdcaab;
+  border-color: #264037;
+  font-family: "Libre Franklin", sans-serif;
+  font-weight: bold;
+  font-size: 18px;
+  color: #6e7d22;
+}
+
+/* Appearance of active tab when interacting and not interacting */
+
+.nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
+  background-color: #264037;
+  border-color: #264037;
+  font-family: "Libre Franklin", sans-serif;
+  font-weight: bold;
+  font-size: 18px;
+  color: #f3f3ed;
+}
+
+/* Border line color of tab panel layout */
+
+#tabs {
+  border-color: #bdcaab;
+}
+
+/* "Show all birds" button default appearance */
+
+#showall {
+  background-color: #bdcaab;
+  border-color: #264037;
+  font-family: "Libre Franklin", sans-serif;
+  font-weight: bold;
+  font-size: 18px;
+  color: #6e7d22;
+}
+
+/* "Show all birds" button when hovering */
+
+#showall:hover {
+  background-color: #ff6b00;
+  font-family: "Libre Franklin", sans-serif;
+  font-weight: bold;
+  font-size: 18px;
+  color: #ffe091;
+}
+
+/* "Reset map" button default appearance */
+
+#resetmap {
+  background-color: #bdcaab;
+  border-color: #264037;
+  font-family: "Libre Franklin", sans-serif;
+  font-weight: bold;
+  font-size: 18px;
+  color: #6e7d22;
+}
+
+/* "Reset map" button when hovering */
+
+#resetmap:hover {
+  background-color: #ff6b00;
+  font-family: "Libre Franklin", sans-serif;
+  font-weight: bold;
+  font-size: 18px;
+  color: #ffe091;
+}
+
+/* "Zoom to MN" button default appearance */
+
+#zoomtomn {
+  background-color: #bdcaab;
+  border-color: #264037;
+  font-family: "Libre Franklin", sans-serif;
+  font-weight: bold;
+  font-size: 18px;
+  color: #6e7d22;
+}
+
+/* "Zoom to MN" button when hovering */
+
+#zoomtomn:hover {
+  background-color: #ff6b00;
+  font-family: "Libre Franklin", sans-serif;
+  font-weight: bold;
+  font-size: 18px;
+  color: #ffe091;
+}
+
+/* General table style */
+
+.table {
+  border-color: #264037;
+  font-family: "Libre Franklin", sans-serif;
+  font-weight: light;
+  color: #264037;
+  text-align: left;
+}
+
+/* Alternating row background colors in data tables */
+
+table.dataTable tbody tr.even {
+  background-color: #f3f3ed;
+}
+
+table.dataTable tbody tr.odd {
+  background-color: #e6e6e1; /* slightly darker version of bg */
+}
+
+/* Hovering over non-selected data table rows */
+
+table.dataTable tbody tr:hover, table.dataTable tbody tr:hover td {
+  background-color: #bdcaab !important;
+}
+
+/* Selected data table rows, row color - now works */
+
+table.dataTable tr.selected td, table.dataTable td.selected  {
+  border-top-color: #ddebe6 !important; /* keeps border between selected rows "transparent" */
+  box-shadow: inset 0 0 0 9999px #8fcdcc !important;
+  color: #264037 !important;
+}
+
+/* Hovering over selected data table rows - this doesn't work, but the way it is now is also fine */
+
+table.dataTable tbody tr:active td {
+    background-color: #8fcdcc !important;
+}
+
+:root {
+    --dt-row-selected: #8fcdcc !important;
+    box-shadow: #8fcdcc !important;
+}
+
+/* Change font color / centering of data table column names */
+
+table.dataTable thead {
+  color: #264037;
+  text-align: left;
+}
+
+/* Change font color and add underline to hyperlinks in table - doesn't work */
+
+table.dataTable tbody > a {
+  color: #19807e;
+  text-decoration: underline;
+}
+
+/* Change font color of "Show entries", "Search", footer, and numbers of data table */
+
+#DataTables_Table_0_filter, #DataTables_Table_0_length, #DataTables_Table_0_info, #DataTables_Table_0_paginate {
+  color: #264037;
+}
+
+/*  */
+
+
+
+/* Map legend */
+
+.map_legend {
+  font-family: "Libre Franklin", sans-serif;
+  color: #264037;
+}
+
+.info legend leaflet-control {
+  font-family: "Libre Franklin", sans-serif;
+  color: #264037;
+}
+
+/* Hyperlink color */
+
+a {
+  color: #264037;
+}
+
+/* Transparent breaks */
+
+hr {
+  border-color: #f3f3ed;
+}
+
+
+/* Site/family/species selection headers */
+
+h4 {
+  font-family: "Libre Franklin", sans-serif;
+  font-weight: bold;
+  font-style: italic;
+  text-decoration: underline;
+  font-size: 18px;
+  color: #264037;
+}
+
+/* Site statistics, column info, and footer text */
+
+h6 {
+  font-family: "Libre Franklin", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  color: #264037;
+}
+
+/* Image margins */
+
+img {
+  margin-left: 25px;
+}
+
+/* Site statistics text box */
+
+#site_statistics {
+  padding-left: 20px;
+  /*padding-right: 20px;*/
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background-color: #86bf90;
+  border-style: solid;
+  border-color: #264037;
+  border-width: thin;
+  border-radius: 4px;
+  padding-right: auto;
+}
+
+/* Columns info text boxes */
+
+#columninfo1 {
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background-color: #86bf90;
+  border-style: solid;
+  border-color: #264037;
+  border-width: thin;
+  border-radius: 4px;
+  padding-right: auto;
+}
+
+#columninfo2 {
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background-color: #86bf90;
+  border-style: solid;
+  border-color: #264037;
+  border-width: thin;
+  border-radius: 4px;
+  padding-right: auto;
+}
+
+/* Footer text box */
+
+#footer {
+  /*padding-left: 20px;*/
+  /*padding-right: 20px;*/
+  /*padding-top: 10px;
+  padding-bottom: 10px;
+  background-color: #c3dec8;
+  border-style: solid;
+  border-color: #264037;
+  border-width: thin;
+  border-radius: 4px;
+  padding-right: auto;*/
+  text-align: center;
+}
+
+/* Changes font and color of selectinput text */
+
+.shiny-input-container {
+  font-family: "Libre Franklin", sans-serif;
+  font-size: 16px;
+  color: #264037;
+}
+
+/* Changes font color and background color of content in selectinput box */
+
+.selectize-dropdown-content {
+  background-color: #f3f3ed;
+  color: #264037;
+}
+
+/* Changes background color of hovered content in selectinput content */
+
+.selectize-dropdown:hover {
+  background-color: #ffe091 !important;
+}
+
+.single.selectize-dropdown.shiny-input-select.shinyjs-resettable.plugin-selectize-plugin-a11y > .selectize-dropdown-content > .option:hover {
+  background-color: #ffe091 !important;
+}
+
+/* Changes background color of selected content in selectinput content */
+
+.selectize-dropdown.selected {
+  background-color: #ff6b00 !important;
+}
+
+.single.selectize-dropdown.shiny-input-select.shinyjs-resettable.plugin-selectize-plugin-a11y > .selectize-dropdown-content > .option.selected {
+  background-color: #ff6b00 !important;
+}
+
+/* Changes color of dropdown arrow and background color of selectinput dropdown */
+
+.selectize-dropdown {
+  background-color: #f3f3ed !important;
+  color: #264037;
+}
+
+.selectize-input, .selectize-input.full, .selectize-control.single, .selectize-input.input-active {
+  background-color: #f3f3ed !important;
+  box-shadow: inset 0 0 0 9999px #f3f3ed !important;
+  color: #264037;
+}
+
+/* Changes background/border color of selectinput box when dropdown is open */
+
+.selectize-input.items.full.has-options.has-items.focus.input-active.dropdown-active {
+  background-color: #f3f3ed !important;
+}
+
+.selectize-input.focus {
+  border-color: #8fcdcc;  /* border color when dropdown active */
+}
