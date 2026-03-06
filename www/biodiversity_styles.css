@@ -166,6 +166,44 @@ body {
   color: #ffe091;
 }
 
+/* "Download data table as CSV" button default appearance */
+
+#download_button1 {
+  background-color: #bdcaab;
+  border-color: #264037;
+  font-family: "Libre Franklin", sans-serif;
+  font-weight: bold;
+  font-size: 18px;
+  color: #6e7d22;
+}
+
+#download_button2 {
+  background-color: #bdcaab;
+  border-color: #264037;
+  font-family: "Libre Franklin", sans-serif;
+  font-weight: bold;
+  font-size: 18px;
+  color: #6e7d22;
+}
+
+/* "Download data table as CSV" button when hovering */
+
+#download_button1:hover {
+  background-color: #ff6b00;
+  font-family: "Libre Franklin", sans-serif;
+  font-weight: bold;
+  font-size: 18px;
+  color: #ffe091;
+}
+
+#download_button2:hover {
+  background-color: #ff6b00;
+  font-family: "Libre Franklin", sans-serif;
+  font-weight: bold;
+  font-size: 18px;
+  color: #ffe091;
+}
+
 /* General table style */
 
 .table {
@@ -231,11 +269,27 @@ table.dataTable tbody > a {
   color: #264037;
 }
 
-/*  */
+/* Bird family plot - change cursor to pointer */
 
+#birdfamily {
+  cursor: pointer;
+}
 
+/* Maps outline */
 
-/* Map legend */
+#map {
+  border: 1.5px solid #c5d1cd;
+  font-family: "Libre Franklin", sans-serif;
+  color: #264037;
+}
+
+#speciesmap {
+  border: 1.5px solid #c5d1cd;
+  font-family: "Libre Franklin", sans-serif;
+  color: #264037;
+}
+
+/* Map legends */
 
 .map_legend {
   font-family: "Libre Franklin", sans-serif;
@@ -258,7 +312,6 @@ a {
 hr {
   border-color: #f3f3ed;
 }
-
 
 /* Site/family/species selection headers */
 
@@ -356,7 +409,7 @@ img {
 /* Changes font color and background color of content in selectinput box */
 
 .selectize-dropdown-content {
-  background-color: #f3f3ed;
+  background-color: #fffffa;
   color: #264037;
 }
 
@@ -364,39 +417,43 @@ img {
 
 .selectize-dropdown:hover {
   background-color: #ffe091 !important;
+  color: #264037 !important;
 }
 
 .single.selectize-dropdown.shiny-input-select.shinyjs-resettable.plugin-selectize-plugin-a11y > .selectize-dropdown-content > .option:hover {
   background-color: #ffe091 !important;
+  color: #264037 !important;
 }
 
 /* Changes background color of selected content in selectinput content */
 
 .selectize-dropdown.selected {
   background-color: #ff6b00 !important;
+  color: #fffffa !important;
 }
 
 .single.selectize-dropdown.shiny-input-select.shinyjs-resettable.plugin-selectize-plugin-a11y > .selectize-dropdown-content > .option.selected {
   background-color: #ff6b00 !important;
+  color: #fffffa !important;
 }
 
 /* Changes color of dropdown arrow and background color of selectinput dropdown */
 
 .selectize-dropdown {
-  background-color: #f3f3ed !important;
+  background-color: #fffffa !important;
   color: #264037;
 }
 
 .selectize-input, .selectize-input.full, .selectize-control.single, .selectize-input.input-active {
-  background-color: #f3f3ed !important;
-  box-shadow: inset 0 0 0 9999px #f3f3ed !important;
+  background-color: #fffffa !important;
+  box-shadow: inset 0 0 0 9999px #fffffa !important;
   color: #264037;
 }
 
 /* Changes background/border color of selectinput box when dropdown is open */
 
 .selectize-input.items.full.has-options.has-items.focus.input-active.dropdown-active {
-  background-color: #f3f3ed !important;
+  background-color: #fffffa !important;
 }
 
 .selectize-input.focus {

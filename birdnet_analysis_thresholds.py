@@ -10,12 +10,19 @@ import pandas as pd
 # Opening file containing bird species and their confidence score threshold values at 50%, 55%, 60%, 65%, 70%, 75%, 80%, 85%, 90%, and 95% confidence levels
 
 threshold_table = pd.read_csv("threshold_table.csv")
+for idx in threshold_table.index.tolist():
+    species = threshold_table["Common.Name"][idx]
+    species = species.replace("1", "'")
+    if species == "Black-crowned Night Heron":
+        species = "Black-crowned Night-Heron"
+    threshold_table.loc[idx, "Common.Name"] = species
 
 # Converting bird species and thresholds dataframe into a dictionary object that's easier to use for later
 
 thresholds = {}
 for i in range(0, len(threshold_table)):
     species = threshold_table["Common.Name"][i]
+    species = species.replace("1", "'")
 
     t50 = float(threshold_table["t50"][i])   # convert strings to floats (characters to numbers)
     t55 = float(threshold_table["t55"][i])
@@ -243,7 +250,7 @@ for file in os.listdir(folder):
                                     (rare_species_table["Common Name"] == species) & \
                                     (rare_species_table["WAV File"] == wav_file)]
 
-            if len(filtered_rare_sp) == 1: # if detection was found in validated rare species df
+            if len(filtered_rare_sp) == 1 or len(filtered_rare_sp) == 2: # if detection was found in validated rare species df
 
                 if species in confdict:
                     if conf > confdict[species][0]:      # only if current conf greater than old conf

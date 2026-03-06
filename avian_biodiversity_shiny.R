@@ -129,8 +129,8 @@ globalmap = leaflet(options = leafletOptions(zoomSnap = 0.25,
 
 #### Cleaning Site Data
 
-originalbirds = c("Cattle Egret", "Northern Goshawk", "Herring Gull", "Warbling Vireo", "Gray Jay", "House Wren", "Yellow Warbler", "Whimbrel", "Arctic Skua", "Pomarine Skua", "Long-tailed Skua", "Red-throated Diver", "Pacific Diver", "White-billed Diver", "Brent Goose", "Grey Phalarope", "Grey-crowned Rosy-Finch", "Black-throated Grey Warbler", "Red Grouse/Willow Grouse", "Common Redpoll", "Barn Owl")
-replacementbirds = c("Western Cattle-Egret", "American Goshawk", "American Herring Gull", "Eastern Warbling Vireo", "Canada Jay", "Northern House Wren", "Northern Yellow Warbler", "Hudsonian Whimbrel", "Parasitic Jaeger", "Pomarine Jaeger", "Long-tailed Jaeger", "Red-throated Loon", "Pacific Loon", "Yellow-billed Loon", "Brant", "Red Phalarope", "Gray-crowned Rosy-Finch", "Black-throated Gray Warbler", "Willow Ptarmigan", "Redpoll", "American Barn Owl")
+originalbirds = c("Cattle Egret", "Northern Goshawk", "Herring Gull", "Warbling Vireo", "Gray Jay", "House Wren", "Yellow Warbler", "Whimbrel", "Arctic Skua", "Pomarine Skua", "Long-tailed Skua", "Red-throated Diver", "Pacific Diver", "White-billed Diver", "Brent Goose", "Grey Phalarope", "Grey-crowned Rosy-Finch", "Black-throated Grey Warbler", "Red Grouse/Willow Grouse", "Common Redpoll", "Barn Owl", "Black-crowned Night-Heron")
+replacementbirds = c("Western Cattle-Egret", "American Goshawk", "American Herring Gull", "Eastern Warbling Vireo", "Canada Jay", "Northern House Wren", "Northern Yellow Warbler", "Hudsonian Whimbrel", "Parasitic Jaeger", "Pomarine Jaeger", "Long-tailed Jaeger", "Red-throated Loon", "Pacific Loon", "Yellow-billed Loon", "Brant", "Red Phalarope", "Gray-crowned Rosy-Finch", "Black-throated Gray Warbler", "Willow Ptarmigan", "Redpoll", "American Barn Owl", "Black-crowned Night Heron")
 for (i in 1:length(originalbirds)) {
   original_name = c(originalbirds[i])
   replacement_name = c(replacementbirds[i])
@@ -267,7 +267,7 @@ makesitemap = function(site) {
   
   map = leaflet(options = leafletOptions(zoomSnap = 0.25,
                                          zoomControl = FALSE)) %>% 
-    setView(lng = tlong, lat = tlat, zoom = 8.25) %>% 
+    setView(lng = tlong, lat = tlat, zoom = 14) %>% 
     addTiles() %>% 
     addProviderTiles("OpenStreetMap.HOT") %>%  
     addAwesomeMarkers(lng = geogs_sites$`Township Long`, 
@@ -289,8 +289,8 @@ makesitemap = function(site) {
         }") %>%
     addResetMapButton() %>% 
     addSearchFeatures(targetGroups = "sites", options = searchFeaturesOptions(
-      moveToLocation = FALSE,
-      zoom = 10,
+      moveToLocation = TRUE,
+      zoom = 14,
       autoCollapse = TRUE,
       hideMarkerOnCollapse = FALSE,
       textPlaceholder = "Search by Site Number...",
@@ -322,7 +322,7 @@ createbirdplot = function(site, text_scale = 1) {
     scale_y_continuous(limits = c(0, maxn), breaks = seq(0, maxn, by = 10)) +
     scale_fill_manual(values = c("#ffb000", "#fe6100", "#dc267f", "#785ef0", "#648fff")) +
     labs(x = "Avian Family", y = "Species Detected",
-         title = str_wrap(plottitle, 70),
+         title = str_wrap(plottitle, 60),
          subtitle = str_wrap("Click on a bar to explore the corresponding species in the data table!", 70)) +
     theme(legend.position = "none",
           axis.text = element_text(family = 'libre',
@@ -348,7 +348,9 @@ createbirdplot = function(site, text_scale = 1) {
                                        size = 20 * text_scale,
                                        color = "#264037",
                                        lineheight = adjusted_lineheight),
-          panel.grid = element_line(color = "#8fcdcc"),
+          #panel.grid = element_line(color = "#ddebe6"),
+          panel.grid.major = element_blank(), 
+          panel.grid.minor = element_blank(),
           #legend.key = element_rect(color = "#f3f3ed",
           #size = 0.5),
           #legend.background = element_rect(fill = "#f3f3ed"),
@@ -445,8 +447,8 @@ createspeciesplot = function(species, text_scale = 1) {
               size = 18/.pt * text_scale,
               vjust = -0.5) +
     labs(x = "Biome Type", y = "Number of Sites",
-         title = str_wrap(plottitle, 40),
-         subtitle = "Detections with 50% Confidence or Higher") +
+         title = str_wrap(plottitle, 40)
+         ) +
     scale_x_discrete(labels = label_wrap(15), drop = FALSE) +
     scale_y_continuous(limits = c(0, maxn), breaks = seq(0, maxn, by = 20)) +
     scale_fill_manual(values = c("#dc267f", "#fe6100")) +
@@ -470,11 +472,13 @@ createspeciesplot = function(species, text_scale = 1) {
                                     face = 'bold',
                                     color = "#264037",
                                     lineheight = adjusted_lineheight),
-          plot.subtitle = element_text(family = 'libre',
-                                       size = 20 * text_scale,
-                                       color = "#264037",
-                                       lineheight = adjusted_lineheight),
-          panel.grid = element_line(color = "#8fcdcc"),
+          #plot.subtitle = element_text(family = 'libre',
+                                       #size = 20 * text_scale,
+                                       #color = "#264037",
+                                       #lineheight = adjusted_lineheight),
+          #panel.grid = element_line(color = "#ddebe6"),
+          panel.grid.major = element_blank(), 
+          panel.grid.minor = element_blank(),
           #legend.key = element_rect(color = "#f3f3ed",
           #size = 0.5),
           #legend.background = element_rect(fill = "#f3f3ed"),
@@ -583,7 +587,17 @@ ui = fluidPage(
           column(4, hidden(actionButton(inputId = "showall", label = "Show all birds at this site"))),
         ),
         hr(),
-        tags$div(class = "table", DTOutput("table")),
+        fluidRow(
+          column(10, tags$div(class = "table", DTOutput("table", width = "800px")))
+          ),
+        #br(),
+        #fluidRow(
+          #column(4),
+          #column(4, 
+                 #hidden(downloadButton(outputId = "download_button1",
+                       #label = "Download data table as CSV"))),
+          #column(4)
+        #),
         hr(),
         hidden(htmlOutput("columninfoheader1")),
         br(),
@@ -612,6 +626,14 @@ ui = fluidPage(
         htmlOutput("species_at_sites"),
         hr(),
         tags$div(class = "table", DTOutput("speciestable")),
+        #br(),
+        #fluidRow(
+          #column(4),
+          #column(4, 
+                 #hidden(downloadButton(outputId = "download_button2",
+                                       #label = "Download data table as CSV"))),
+          #column(4)
+        #),
         hr(),
         hidden(htmlOutput("columninfoheader2")),
         br(),
@@ -743,6 +765,8 @@ server = function(input, output) {
         h6(HTML(glue("<strong>Total Detections:</strong> The number of times this species was detected at this site above our confidence threshold. Because BirdNET analyzes audio in 3-second segments, a single bird can produce many detections, so this number reflects acoustic activity rather than the number of individual birds present.")))
       )
     )
+    
+    #shinyjs::show("download_button1") # show download button
     shinyjs::show("columninfoheader1") # show column info header
     shinyjs::show("columninfo1") # show column info
     shinyjs::hide("showall") # birds reset button hidden
@@ -772,6 +796,7 @@ server = function(input, output) {
     df("")
     shinyjs::hide("site_statistics") # site statistics box hidden
     shinyjs::hide("showall") # birds reset button hidden
+    #shinyjs::hide("download_button1") # hide download button
     shinyjs::hide("columninfoheader1") # hide column info header
     shinyjs::hide("columninfo1") # hide column info
     shinyjs::hide("zoomtomn") # zoom to MN button hidden
@@ -809,6 +834,7 @@ server = function(input, output) {
   # tab 2
   
   observeEvent(input$species != "", {
+    req(input$species) # ensures that if selectinput backspaced, code won't execute and app won't crash
     currentspecies(input$species)
     speciesmap(makespeciesmap(currentspecies()))
     speciesdf(filterspecies(currentspecies()))
@@ -833,11 +859,12 @@ server = function(input, output) {
       paste(
         h6(HTML(glue("<em>Audio was recorded at sites across Minnesota and processed using BirdNET, a machine learning tool for identifying birds by sound. Detections were filtered using statistical models to reduce false positives.</em>"))),
         br(),
-        h6(HTML(glue("<strong>Biome Type:</strong> Primary vegetation type found at site, either 'forest' or 'grassland'"))),
+        h6(HTML(glue("<strong>Biome Type:</strong> Primary vegetation type found at site, either 'forest' or 'grassland'."))),
         h6(HTML(glue("<strong>Detection Probability:</strong> The likelihood that this detection is a true detection of the species, based on statistical models our team developed using hundreds of manually reviewed recordings. Higher values indicate greater certainty. For example, a value of 95% means our models estimate a 95% chance that this is a real detection."))),
         h6(HTML(glue("<strong>Total Detections:</strong> The number of times this species was detected at this site above our confidence threshold. Because BirdNET analyzes audio in 3-second segments, a single bird can produce many detections, so this number reflects acoustic activity rather than the number of individual birds present.")))
       )
     )
+    #shinyjs::show("download_button2") # show download button
     shinyjs::show("columninfoheader2") # show column info header
     shinyjs::show("columninfo2") # show column info
     
@@ -862,8 +889,17 @@ server = function(input, output) {
   output$table = renderDT(datatable(req(df()), escape = FALSE, 
                                     container = tab1tablehover,
                                     options = list(
+                                      autoWidth = TRUE,
                                       columnDefs = list(list(className = 'dt-left',
                                                              targets = "_all")))))
+  #output$download_button1 <- downloadHandler(
+    #filename = function() {
+      #glue("sounds_of_nature_site_{currentsite()}_results.csv")
+    #},
+    #content = function(file) {
+      #write.csv(df(), file, quote = FALSE)
+    #}
+  #)
   output$columninfoheader1 = renderUI({HTML(columninfoheader1())})
   output$columninfo1 = renderUI({HTML(columninfo1())})
   
@@ -881,13 +917,21 @@ server = function(input, output) {
                                                options = list(
                                                  columnDefs = list(list(className = 'dt-left',
                                                                         targets = "_all"))))))
+  #output$download_button2 <- downloadHandler(
+    #filename = function() {
+      #glue("sounds_of_nature_{currentspecies()}_results.csv")
+    #},
+    #content = function(file) {
+      #write.csv(df(), file, quote = FALSE)
+    #}
+  #)
   output$columninfoheader2 = renderUI({HTML(columninfoheader2())})
   output$columninfo2 = renderUI({HTML(columninfo2())})
   
   # overall
   output$footer = renderUI({
     HTML(paste(
-      h6("This research is made possible through support from the University of Minnesota and Minnesota's Environment and Natural Resources Trust Fund. Partners include the Minnesota Department of Natural Resources, the Minnesota Cooperative Fish and Wildlife Research Unit, the Upper Mississippi River Audubon, and our citizen science volunteers and collaborators."), h6("App and data last updated on Mar 2nd, 2026."), h6(HTML(glue("<em><strong>Contact us at:</strong></em> <u>soundsofnature@umn.edu</u>")))
+      h6("This research is made possible with support from the University of Minnesota and Minnesota's Environment and Natural Resources Trust Fund. Partners include the Minnesota Department of Natural Resources, the Minnesota Cooperative Fish and Wildlife Research Unit, Audubon Upper Mississippi River, and our citizen science volunteers and collaborators."), h6("App and data last updated on Mar 5th, 2026."), h6(HTML(glue("<em><strong>Contact us at:</strong></em> <u>soundsofnature@umn.edu</u>")))
     ))
   })
 }
