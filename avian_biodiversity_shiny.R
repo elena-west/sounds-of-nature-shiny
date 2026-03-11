@@ -21,6 +21,7 @@ library(shinybrowser)
 library(htmltools)
 library(glue)
 library(htmlwidgets)
+library(favawesome)
 
 font_add_google("Libre Franklin", "libre")
 showtext_auto()
@@ -322,8 +323,8 @@ createbirdplot = function(site, text_scale = 1) {
     scale_y_continuous(limits = c(0, maxn), breaks = seq(0, maxn, by = 10)) +
     scale_fill_manual(values = c("#ffb000", "#fe6100", "#dc267f", "#785ef0", "#648fff")) +
     labs(x = "Avian Family", y = "Species Detected",
-         title = str_wrap(plottitle, 60),
-         subtitle = str_wrap("Click on a bar to explore the corresponding species in the data table!", 70)) +
+         title = str_wrap(plottitle, 40),
+         subtitle = str_wrap("Click on a bar to explore the corresponding species in the data table!", 55)) +
     theme(legend.position = "none",
           axis.text = element_text(family = 'libre',
                                    size = 18 * text_scale,
@@ -345,7 +346,7 @@ createbirdplot = function(site, text_scale = 1) {
                                     color = "#264037",
                                     lineheight = adjusted_lineheight),
           plot.subtitle = element_text(family = 'libre',
-                                       size = 20 * text_scale,
+                                       size = 19 * text_scale,
                                        color = "#264037",
                                        lineheight = adjusted_lineheight),
           #panel.grid = element_line(color = "#ddebe6"),
@@ -359,7 +360,7 @@ createbirdplot = function(site, text_scale = 1) {
           plot.background = element_rect(linewidth = 1,
                                          color = "#c5d1cd",
                                          fill = "#fffffa"),
-          plot.margin = margin(t = 14, r = 60, b = 14, l = 14)
+          plot.margin = margin(t = 14, r = 50, b = 14, l = 14)
     ) 
 }
 
@@ -447,7 +448,7 @@ createspeciesplot = function(species, text_scale = 1) {
               size = 18/.pt * text_scale,
               vjust = -0.5) +
     labs(x = "Biome Type", y = "Number of Sites",
-         title = str_wrap(plottitle, 40)
+         title = str_wrap(plottitle, 30)
          ) +
     scale_x_discrete(labels = label_wrap(15), drop = FALSE) +
     scale_y_continuous(limits = c(0, maxn), breaks = seq(0, maxn, by = 20)) +
@@ -534,6 +535,10 @@ ui = fluidPage(
   setBackgroundColor(color = "#f3f3ed"),
   includeCSS("www/biodiversity_styles.css"),
   useShinyjs(),
+  fav("crow"), # adding crow favicon from FontAwesome to app
+  tags$head(
+    tags$title("Sounds of Nature MN 2025")
+  ),
   titlePanel(tags$div(class = "app_title", "Sounds of Nature Minnesota 2025 Avian Biodiversity Visualizer")),
   shinybrowser::detect(),
   #"Your browser dimensions:",
@@ -576,8 +581,8 @@ ui = fluidPage(
         hr(),
         fluidRow(
           column(1),
-          column(10, tags$div(class = "plot", plotOutput("birdfamily", click = "familyclick"))),#, 
-          #width = "600px", height = "400px")))
+          column(10, tags$div(class = "plot", plotOutput("birdfamily", click = "familyclick", 
+          width = "600px", height = "400px"))),
           column(1)
         ),
         hr(),
@@ -618,8 +623,8 @@ ui = fluidPage(
         ),
         hr(),
         fluidRow(
-          column(8, tags$div(class = "plot", plotOutput("speciesplot"))),#, 
-          #width = "600px", height = "400px")))
+          column(8, tags$div(class = "plot", plotOutput("speciesplot", 
+          width = "600px", height = "400px"))),
           column(4)
         ),
         hr(),
@@ -844,7 +849,7 @@ server = function(input, output) {
     })
     speciesplot({
       num = window_width()/1440
-      scale_factor = ((1-(1/num))/4) + (1/num)
+      scale_factor = 1/num #((1-(1/num))/10) + (1/num)
       createspeciesplot(currentspecies(), text_scale = scale_factor)
     })
     displayed_species_at_sites(
@@ -931,7 +936,7 @@ server = function(input, output) {
   # overall
   output$footer = renderUI({
     HTML(paste(
-      h6("This research is made possible with support from the University of Minnesota and Minnesota's Environment and Natural Resources Trust Fund. Partners include the Minnesota Department of Natural Resources, the Minnesota Cooperative Fish and Wildlife Research Unit, Audubon Upper Mississippi River, and our citizen science volunteers and collaborators."), h6("App and data last updated on Mar 5th, 2026."), h6(HTML(glue("<em><strong>Contact us at:</strong></em> <u>soundsofnature@umn.edu</u>")))
+      h6("This research is made possible with support from the University of Minnesota and Minnesota's Environment and Natural Resources Trust Fund. Partners include the Minnesota Department of Natural Resources, the Minnesota Cooperative Fish and Wildlife Research Unit, Audubon Upper Mississippi River, and our citizen science volunteers and collaborators."), h6("App and data last updated on Mar 11th, 2026."), h6(HTML(glue("<em><strong>Contact us at:</strong></em> <u>soundsofnature@umn.edu</u>")))
     ))
   })
 }

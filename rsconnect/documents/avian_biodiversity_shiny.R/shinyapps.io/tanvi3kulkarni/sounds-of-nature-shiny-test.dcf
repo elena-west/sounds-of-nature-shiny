@@ -1,0 +1,13 @@
+name: sounds-of-nature-shiny-test
+title: sounds-of-nature-shiny-test
+username: tanvi3kulkarni
+account: tanvi3kulkarni
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 16862922
+bundleId: 11695496
+url: https://tanvi3kulkarni.shinyapps.io/sounds-of-nature-shiny-test/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: birdnet_analysis_thresholds.py|confidence_thresholds.Rmd|rare_species.py|README.md|threshold_table.csv|validated_rare_species.csv
