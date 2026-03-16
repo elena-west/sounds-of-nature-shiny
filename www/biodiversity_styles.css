@@ -16,6 +16,44 @@ body {
   margin-right: auto;
 }
 
+/* Hyperlink color */
+
+a {
+  color: #264037;
+}
+
+/* Transparent breaks */
+
+hr {
+  border-color: #f3f3ed;
+}
+
+/* Site/family/species selection headers */
+
+h4 {
+  font-family: "Libre Franklin", sans-serif;
+  font-weight: bold;
+  font-style: italic;
+  text-decoration: underline;
+  font-size: 18px;
+  color: #264037;
+}
+
+/* Site statistics, column info, and footer text */
+
+h6 {
+  font-family: "Libre Franklin", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  color: #264037;
+}
+
+/* Image margins */
+
+img {
+  margin-left: 25px;
+}
+
 /* Main app header (title panel text) */
 
 .app_title {
@@ -227,7 +265,8 @@ table.dataTable tbody tr.odd {
 /* Hovering over non-selected data table rows */
 
 table.dataTable tbody tr:hover, table.dataTable tbody tr:hover td {
-  background-color: #bdcaab !important;
+  background-color: #ddebe6 !important;
+  color: #264037 !important;
 }
 
 /* Selected data table rows, row color - now works */
@@ -242,11 +281,13 @@ table.dataTable tr.selected td, table.dataTable td.selected  {
 
 table.dataTable tbody tr:active td {
     background-color: #8fcdcc !important;
+    color: #264037 !important;
 }
 
 :root {
     --dt-row-selected: #8fcdcc !important;
     box-shadow: #8fcdcc !important;
+    color: #264037 !important;
 }
 
 /* Change font color / centering of data table column names */
@@ -256,11 +297,17 @@ table.dataTable thead {
   text-align: left;
 }
 
-/* Change font color and add underline to hyperlinks in table - doesn't work */
+/* Change font color and add underline to hyperlinks in table (default + hover) - now works */
 
-table.dataTable tbody > a {
-  color: #19807e;
-  text-decoration: underline;
+table.dataTable td > a {
+  color: #264037 !important;
+  text-decoration: underline !important;
+}
+
+table.dataTable td > a:hover {
+  color: #00706e !important;
+  font-weight: 600;
+  text-decoration: underline !important;
 }
 
 /* Change font color of "Show entries", "Search", footer, and numbers of data table */
@@ -299,44 +346,6 @@ table.dataTable tbody > a {
 .info legend leaflet-control {
   font-family: "Libre Franklin", sans-serif;
   color: #264037;
-}
-
-/* Hyperlink color */
-
-a {
-  color: #264037;
-}
-
-/* Transparent breaks */
-
-hr {
-  border-color: #f3f3ed;
-}
-
-/* Site/family/species selection headers */
-
-h4 {
-  font-family: "Libre Franklin", sans-serif;
-  font-weight: bold;
-  font-style: italic;
-  text-decoration: underline;
-  font-size: 18px;
-  color: #264037;
-}
-
-/* Site statistics, column info, and footer text */
-
-h6 {
-  font-family: "Libre Franklin", sans-serif;
-  font-weight: 400;
-  font-size: 16px;
-  color: #264037;
-}
-
-/* Image margins */
-
-img {
-  margin-left: 25px;
 }
 
 /* Site statistics text box */
@@ -396,6 +405,10 @@ img {
   border-radius: 4px;
   padding-right: auto;*/
   text-align: center;
+}
+
+#footer h6 {
+  line-height: 23px !important;
 }
 
 /* Changes font and color of selectinput text */

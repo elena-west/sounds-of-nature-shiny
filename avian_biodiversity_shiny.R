@@ -130,8 +130,8 @@ globalmap = leaflet(options = leafletOptions(zoomSnap = 0.25,
 
 #### Cleaning Site Data
 
-originalbirds = c("Cattle Egret", "Northern Goshawk", "Herring Gull", "Warbling Vireo", "Gray Jay", "House Wren", "Yellow Warbler", "Whimbrel", "Arctic Skua", "Pomarine Skua", "Long-tailed Skua", "Red-throated Diver", "Pacific Diver", "White-billed Diver", "Brent Goose", "Grey Phalarope", "Grey-crowned Rosy-Finch", "Black-throated Grey Warbler", "Red Grouse/Willow Grouse", "Common Redpoll", "Barn Owl", "Black-crowned Night-Heron")
-replacementbirds = c("Western Cattle-Egret", "American Goshawk", "American Herring Gull", "Eastern Warbling Vireo", "Canada Jay", "Northern House Wren", "Northern Yellow Warbler", "Hudsonian Whimbrel", "Parasitic Jaeger", "Pomarine Jaeger", "Long-tailed Jaeger", "Red-throated Loon", "Pacific Loon", "Yellow-billed Loon", "Brant", "Red Phalarope", "Gray-crowned Rosy-Finch", "Black-throated Gray Warbler", "Willow Ptarmigan", "Redpoll", "American Barn Owl", "Black-crowned Night Heron")
+originalbirds = c("Cattle Egret", "Northern Goshawk", "Herring Gull", "Warbling Vireo", "Gray Jay", "House Wren", "Yellow Warbler", "Whimbrel", "Arctic Skua", "Pomarine Skua", "Long-tailed Skua", "Red-throated Diver", "Pacific Diver", "White-billed Diver", "Brent Goose", "Grey Phalarope", "Grey-crowned Rosy-Finch", "Black-throated Grey Warbler", "Red Grouse/Willow Grouse", "Common Redpoll", "Barn Owl", "Black-crowned Night-Heron", "Yellow-crowned Night-Heron")
+replacementbirds = c("Western Cattle-Egret", "American Goshawk", "American Herring Gull", "Eastern Warbling Vireo", "Canada Jay", "Northern House Wren", "Northern Yellow Warbler", "Hudsonian Whimbrel", "Parasitic Jaeger", "Pomarine Jaeger", "Long-tailed Jaeger", "Red-throated Loon", "Pacific Loon", "Yellow-billed Loon", "Brant", "Red Phalarope", "Gray-crowned Rosy-Finch", "Black-throated Gray Warbler", "Willow Ptarmigan", "Redpoll", "American Barn Owl", "Black-crowned Night Heron", "Yellow-crowned Night Heron")
 for (i in 1:length(originalbirds)) {
   original_name = c(originalbirds[i])
   replacement_name = c(replacementbirds[i])
@@ -190,6 +190,16 @@ cleanedsites = cleaningsites %>%
   select(`Site Number`, `Scientific Name`, `Common Name`, Family, `Highest Confidence`, 
          `Total Detections`, `More Information`) %>% 
   relocate(`Highest Confidence`, .before = `Total Detections`)
+
+sgcnbirds = c("Acadian Flycatcher", "American Barn Owl", "American Bittern", "American Black Duck", "American Goshawk", "American Kestrel", "American Three-toed Woodpecker", "American White Pelican", "Baird's Sparrow", "Bay-breasted Warbler", "Bell's Vireo", "Black Tern", "Black-backed Woodpecker", "Black-crowned Night Heron", "Black-throated Blue Warbler", "Bobolink", "Boreal Chickadee", "Boreal Owl", "Buff-breasted Sandpiper", "Bufflehead", "Burrowing Owl", "Canvasback", "Cape May Warbler", "Cerulean Warbler", "Chestnut-collared Longspur", "Chimney Swift", "Common Gallinule", "Common Loon", "Common Nighthawk", "Common Tern", "Connecticut Warbler", "Eared Grebe", "Eastern Meadowlark", "Eastern Whip-poor-will", "Evening Grosbeak", "Field Sparrow", "Forster's Tern", "Franklin's Gull", "Golden-winged Warbler", "Grasshopper Sparrow", "Great Gray Owl", "Greater Prairie Chicken", "Henslow's Sparrow", "Horned Grebe", "King Rail", "Lark Sparrow", "Least Bittern", "LeConte's Sparrow", "Lesser Scaup", "Loggerhead Shrike", "Louisiana Waterthrush", "Marbled Godwit", "Nelson's Sparrow", "Northern Harrier", "Northern Pintail", "Olive-sided Flycatcher", "Peregrine Falcon", "Philadelphia Vireo", "Piping Plover", "Prothonotary Warbler", "Purple Martin", "Red Knot", "Red-headed Woodpecker", "Red-necked Grebe", "Red-shouldered Hawk", "Sedge Wren", "Sharp-tailed Grouse", "Short-eared Owl", "Solitary Sandpiper", "Sprague's Pipit", "Spruce Grouse", "Swainson's Hawk", "Swainson's Thrush", "Upland Sandpiper", "Western Grebe", "Western Kingbird", "Western Meadowlark", "Wilson's Phalarope", "Yellow Rail")
+sgcnbirds_wsymbol = c("Acadian Flycatcher¹", "American Barn Owl¹", "American Bittern¹", "American Black Duck¹", "American Goshawk¹", "American Kestrel¹", "American Three-toed Woodpecker¹", "American White Pelican¹", "Baird's Sparrow¹", "Bay-breasted Warbler¹", "Bell's Vireo¹", "Black Tern¹", "Black-backed Woodpecker¹", "Black-crowned Night Heron¹", "Black-throated Blue Warbler¹", "Bobolink¹", "Boreal Chickadee¹", "Boreal Owl¹", "Buff-breasted Sandpiper¹", "Bufflehead¹", "Burrowing Owl¹", "Canvasback¹", "Cape May Warbler¹", "Cerulean Warbler¹", "Chestnut-collared Longspur¹", "Chimney Swift¹", "Common Gallinule¹", "Common Loon¹", "Common Nighthawk¹", "Common Tern¹", "Connecticut Warbler¹", "Eared Grebe¹", "Eastern Meadowlark¹", "Eastern Whip-poor-will¹", "Evening Grosbeak¹", "Field Sparrow¹", "Forster's Tern¹", "Franklin's Gull¹", "Golden-winged Warbler¹", "Grasshopper Sparrow¹", "Great Gray Owl¹", "Greater Prairie Chicken¹", "Henslow's Sparrow¹", "Horned Grebe¹", "King Rail¹", "Lark Sparrow¹", "Least Bittern¹", "LeConte's Sparrow¹", "Lesser Scaup¹", "Loggerhead Shrike¹", "Louisiana Waterthrush¹", "Marbled Godwit¹", "Nelson's Sparrow¹", "Northern Harrier¹", "Northern Pintail¹", "Olive-sided Flycatcher¹", "Peregrine Falcon¹", "Philadelphia Vireo¹", "Piping Plover¹", "Prothonotary Warbler¹", "Purple Martin¹", "Red Knot¹", "Red-headed Woodpecker¹", "Red-necked Grebe¹", "Red-shouldered Hawk¹", "Sedge Wren¹", "Sharp-tailed Grouse¹", "Short-eared Owl¹", "Solitary Sandpiper¹", "Sprague's Pipit¹", "Spruce Grouse¹", "Swainson's Hawk¹", "Swainson's Thrush¹", "Upland Sandpiper¹", "Western Grebe¹", "Western Kingbird¹", "Western Meadowlark¹", "Wilson's Phalarope¹", "Yellow Rail¹")
+for (i in 1:length(sgcnbirds)) {
+  original_name = c(sgcnbirds[i])
+  replacement_name = c(sgcnbirds_wsymbol[i])
+  cleanedsites$`Common Name` = replace(cleanedsites$`Common Name`, cleanedsites$`Common Name` %in% original_name, replacement_name)
+}
+cleanedsites$`Common Name` = replace(cleanedsites$`Common Name`, cleanedsites$`Common Name` %in% "Eastern Screech-Owl", "Eastern Screech-Owl²")
+
 
 unique_families = cleanedsites %>%
   select(Family) %>% 
@@ -307,7 +317,7 @@ createbirdplot = function(site, text_scale = 1) {
     group_by(Family) %>% 
     count()
   filtered_df$Family = factor(filtered_df$Family, levels = unique_families$Family) # ensures that even if a family has no birds at a site, the empty family bar is still shown on plot
-  plottitle = paste0("Number of Species Detected within Each Avian Family at Site ", site)
+  plottitle = paste0("Number of Species Detected within Each Avian Group at Site ", site)
   maxn = max(filtered_df$n) + 10
   adjusted_lineheight = 0.55 + (0.55-(0.55*text_scale))
   ggplot(filtered_df) +
@@ -322,7 +332,7 @@ createbirdplot = function(site, text_scale = 1) {
     scale_x_discrete(labels = label_wrap(11), drop = FALSE) +
     scale_y_continuous(limits = c(0, maxn), breaks = seq(0, maxn, by = 10)) +
     scale_fill_manual(values = c("#ffb000", "#fe6100", "#dc267f", "#785ef0", "#648fff")) +
-    labs(x = "Avian Family", y = "Species Detected",
+    labs(x = "Avian Group", y = "Species Detected",
          title = str_wrap(plottitle, 40),
          subtitle = str_wrap("Click on a bar to explore the corresponding species in the data table!", 55)) +
     theme(legend.position = "none",
@@ -434,7 +444,8 @@ createspeciesplot = function(species, text_scale = 1) {
     group_by(`Biome Type`) %>% 
     count()
   filtered_df$`Biome Type` = factor(filtered_df$`Biome Type`, levels = c("Forest", "Grassland")) # ensures that even if a species is not represented at one biome type, the empty biome type bar is still shown on plot
-  plottitle = paste0(species, " Detection Sites by Biome")
+  val = if (species %in% sgcnbirds_wsymbol | species == "Eastern Screech-Owl²") {str_sub(species, 1, -2)} else {species}
+  plottitle = paste0(val, " Detection Sites by Biome")
   maxn = max(filtered_df$n) + 10
   adjusted_lineheight = 0.55 + (0.55-(0.55*text_scale))
   ggplot(filtered_df) +
@@ -503,7 +514,7 @@ tab1tablehover = htmltools::withTags(table(
       th("Site Number", title = "Number assigned to site", class = 'dt-head-left'),
       th("Scientific Name", title = "Species scientific name", class = 'dt-head-left'),
       th("Common Name", title = "Species common name", class = 'dt-head-left'),
-      th("Family", title = "Taxonomic category to which a given species belongs.", class = 'dt-head-left'),
+      th("Avian Group", title = "Taxonomic category to which a given species belongs.", class = 'dt-head-left'),
       th("Detection Probability", title = "The likelihood that this detection is a true detection of the species, based on statistical models our team developed using hundreds of manually reviewed recordings. Higher values indicate greater certainty. For example, a value of 95% means our models estimate a 95% chance that this is a real detection.", class = 'dt-head-left'),
       th("Total Detections", title = "The number of times this species was detected at this site above our confidence threshold. Because BirdNET analyzes audio in 3-second segments, a single bird can produce many detections, so this number reflects acoustic activity rather than the number of individual birds present.", class = 'dt-head-left'),
       th("More Information", title = "Click the links below to learn more about each species", class = 'dt-head-left')
@@ -551,7 +562,7 @@ ui = fluidPage(
                p(strong("Tab 1:", em("Search by Site"))),
                #p(tags$div(class = "sidebar_header", "Tab 1:<em>Search by Site</em>")),
                p(strong(em("Start")), "by zooming into your area of interest on the map. You can hover over pins to see their 5-digit site code. Alternatively, if you know your site code, you can enter it in the search bar in the top left corner of the map, below the 'reset map view' button. Once you have found your site,", strong(em("click")), "on a pin to learn more about what birds were detected at that location.", em("Note: To protect sensitive species and landowner privacy, we have moved location coordinates to public sites within 3 miles (5 km) of these sampling locations.")),
-               p(strong(em("Next,")), "you will see a bar chart below the map representing the different avian families detected at each site. Click on a bar (i.e., family) to filter the data table below to explore what species within that group were detected at a given site. Scroll to the right within the table and follow the links to learn more about each species. To view all the species detected at a site, click on the green 'Show all birds at this site' button below the plot. Hover over column names or scroll below the data table for column descriptions."),
+               p(strong(em("Next,")), "you will see a bar chart below the map representing the different avian groups detected at each site. Click on a bar (i.e., avian group) to filter the data table below to explore what species within that group were detected at a given site. Scroll to the right within the table and follow the links to learn more about each species. To view all the species detected at a site, click on the green 'Show all birds at this site' button below the plot. Hover over column names or scroll below the data table for column descriptions."),
                br(),
                p(strong("Tab 2:", em("Search by Species"))),
                #p(tags$div(class = "sidebar_header", "Tab 2:<em>Search by Species</em>")),
@@ -765,9 +776,12 @@ server = function(input, output) {
       paste(
         h6(HTML(glue("<em>Audio was recorded at sites across Minnesota and processed using BirdNET, a machine learning tool for identifying birds by sound. Detections were filtered using statistical models to reduce false positives.</em>"))),
         br(),
-        h6(HTML(glue("<strong>Family:</strong> Taxonomic category to which a given species belongs."))),
+        h6(HTML(glue("<strong>Avian Group:</strong> Taxonomic category to which a given species belongs."))),
         h6(HTML(glue("<strong>Detection Probability:</strong> The likelihood that this detection is a true detection of the species, based on statistical models our team developed using hundreds of manually reviewed recordings. Higher values indicate greater certainty. For example, a value of 95% means our models estimate a 95% chance that this is a real detection."))),
-        h6(HTML(glue("<strong>Total Detections:</strong> The number of times this species was detected at this site above our confidence threshold. Because BirdNET analyzes audio in 3-second segments, a single bird can produce many detections, so this number reflects acoustic activity rather than the number of individual birds present.")))
+        h6(HTML(glue("<strong>Total Detections:</strong> The number of times this species was detected at this site above our confidence threshold. Because BirdNET analyzes audio in 3-second segments, a single bird can produce many detections, so this number reflects acoustic activity rather than the number of individual birds present."))),
+        br(),
+        h6(HTML(glue("<strong>¹</strong> Species of Greatest Conservation Need (SGCN)"))),
+        h6(HTML(glue("<strong>²</strong> Species in Need of Information (SNI)")))
       )
     )
     
@@ -844,17 +858,22 @@ server = function(input, output) {
     speciesmap(makespeciesmap(currentspecies()))
     speciesdf(filterspecies(currentspecies()))
     speciesmsg({
+      val = if (currentspecies() %in% sgcnbirds_wsymbol | currentspecies() == "Eastern Screech-Owl²") {str_sub(currentspecies(), 1, -2)} else {currentspecies()}
       percentsites = round((nrow(speciesdf())/121), 2)*100
-      paste(br(), h6(HTML(glue("<strong>{currentspecies()} detected at ~{percentsites}% of sites</strong>"))))
+      paste(br(), h6(HTML(glue("<strong>{val} detected at ~{percentsites}% of sites</strong>"))))
     })
     speciesplot({
       num = window_width()/1440
-      scale_factor = 1/num #((1-(1/num))/10) + (1/num)
+      scale_factor = abs(((1-(1/num))/6.3) - (1/num))
       createspeciesplot(currentspecies(), text_scale = scale_factor)
     })
-    displayed_species_at_sites(
-      paste(br(), h4(paste0("Showing all sites with ", currentspecies(), ":")))
-    )
+    displayed_species_at_sites({
+      val = if (currentspecies() %in% sgcnbirds_wsymbol | currentspecies() == "Eastern Screech-Owl²") {str_sub(currentspecies(), 1, -2)} else {currentspecies()}
+      paste(
+        br(), 
+        h4(paste0("Showing all sites with ", val, ":"))
+      )
+    })
     
     columninfoheader2(
       paste(h4("How to read the data table above:"))
@@ -866,7 +885,10 @@ server = function(input, output) {
         br(),
         h6(HTML(glue("<strong>Biome Type:</strong> Primary vegetation type found at site, either 'forest' or 'grassland'."))),
         h6(HTML(glue("<strong>Detection Probability:</strong> The likelihood that this detection is a true detection of the species, based on statistical models our team developed using hundreds of manually reviewed recordings. Higher values indicate greater certainty. For example, a value of 95% means our models estimate a 95% chance that this is a real detection."))),
-        h6(HTML(glue("<strong>Total Detections:</strong> The number of times this species was detected at this site above our confidence threshold. Because BirdNET analyzes audio in 3-second segments, a single bird can produce many detections, so this number reflects acoustic activity rather than the number of individual birds present.")))
+        h6(HTML(glue("<strong>Total Detections:</strong> The number of times this species was detected at this site above our confidence threshold. Because BirdNET analyzes audio in 3-second segments, a single bird can produce many detections, so this number reflects acoustic activity rather than the number of individual birds present."))),
+        br(),
+        h6(HTML(glue("<strong>¹</strong> Species of Greatest Conservation Need (SGCN)"))),
+        h6(HTML(glue("<strong>²</strong> Species in Need of Information (SNI)")))
       )
     )
     #shinyjs::show("download_button2") # show download button
@@ -883,7 +905,7 @@ server = function(input, output) {
   })
   output$spacer1 = renderUI({HTML(paste(" ", br()))})
   output$siteselection = renderUI({
-    if (displayedsite() == "") {HTML(paste(h4("Select your Site Below:")))} else {HTML(displayedsite())}
+    if (displayedsite() == "") {HTML(paste(h4("Select your site below:")))} else {HTML(displayedsite())}
   })
   output$map = renderLeaflet(map())
   output$site_stats_header = renderUI({HTML(displayedstatsheader())})
@@ -936,7 +958,7 @@ server = function(input, output) {
   # overall
   output$footer = renderUI({
     HTML(paste(
-      h6("This research is made possible with support from the University of Minnesota and Minnesota's Environment and Natural Resources Trust Fund. Partners include the Minnesota Department of Natural Resources, the Minnesota Cooperative Fish and Wildlife Research Unit, Audubon Upper Mississippi River, and our citizen science volunteers and collaborators."), h6("App and data last updated on Mar 11th, 2026."), h6(HTML(glue("<em><strong>Contact us at:</strong></em> <u>soundsofnature@umn.edu</u>")))
+      h6("This research is made possible with support from the University of Minnesota and Minnesota's Environment and Natural Resources Trust Fund. Partners include the Minnesota Department of Natural Resources, the Minnesota Cooperative Fish and Wildlife Research Unit, Audubon Upper Mississippi River, and our citizen science volunteers and collaborators."), h6("App and data last updated on Mar 16th, 2026."), h6(HTML(glue("<em><strong>Contact us at:</strong></em> <u>soundsofnature@umn.edu</u>")))
     ))
   })
 }
