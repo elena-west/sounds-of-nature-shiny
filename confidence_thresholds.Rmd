@@ -15,8 +15,8 @@ setwd(dir = "Z:/CFANS_fwcb_elwest_westlab/Project Folders/Bioacoustics Phase ll"
 
 library(stringr)
 common_name_list = list()
-t50_list = list()
-t55_list = list()
+#t50_list = list()
+#t55_list = list()
 t60_list = list()
 t65_list = list()
 t70_list = list()
@@ -34,9 +34,9 @@ for (i in 1:length(list.files("/CFANS_fwcb_elwest_westlab/Project Folders/Bioaco
   path = paste0("/CFANS_fwcb_elwest_westlab/Project Folders/Bioacoustics Phase ll/2025/Validation/Finalized_Threshold_Tables/", filename)
   table <- read.table(path, sep = "\t", header = TRUE)
   
-  # make sure Valid column has only 0/1; if other values, then skip file
+    # make sure Valid column has only 0/1; if other values, then skip file
   
-  if (any((table[, "Valid"] %in% c(0, 1)) == FALSE) == TRUE) {
+  if (any((table[, "Valid"] %in% c(0, 1, "0", "1")) == FALSE) == TRUE) {
     msg = paste0(filename, " has non-0/1 values in the Valid column! Skipping this file.")
     print(msg)
     print(table[, "Valid"])
@@ -51,8 +51,13 @@ for (i in 1:length(list.files("/CFANS_fwcb_elwest_westlab/Project Folders/Bioaco
   # extract the numeric score from the file name:
   table$Score <- as.numeric(substr(table$Begin.File, 1, 5))
   
+  # ensure valid column is all integers (0 or 1):
+  table$Valid = as.numeric(table$Valid)
+  
   # fit the logistic regression model:
   model <- glm(Valid ~ Score, family = "binomial", data = table)
+  print(model$coefficients[1])
+  print(model$coefficients[2])
   
   # plot the individual points (x = Score, y = Valid):
   plot(Valid~Score, data=table, xlim=c(0,1), pch=16,
@@ -86,12 +91,12 @@ for (i in 1:length(list.files("/CFANS_fwcb_elwest_westlab/Project Folders/Bioaco
   p60 <- 0.60
   score_threshold_60 <- (log(p60/(1-p60))-model$coefficients[1]) /
     model$coefficients[2]
-  p55 <- 0.55
-  score_threshold_55 <- (log(p55/(1-p55))-model$coefficients[1]) /
-    model$coefficients[2]
-  p50 <- 0.5
-  score_threshold_50 <- (log(p50/(1-p50))-model$coefficients[1]) /
-    model$coefficients[2]
+  #p55 <- 0.55
+  #score_threshold_55 <- (log(p55/(1-p55))-model$coefficients[1]) /
+    #model$coefficients[2]
+  #p50 <- 0.5
+  #score_threshold_50 <- (log(p50/(1-p50))-model$coefficients[1]) /
+    #model$coefficients[2]
   
   # checking if any values below 0.25; if yes, defaulted to 0.25
   
@@ -103,13 +108,13 @@ for (i in 1:length(list.files("/CFANS_fwcb_elwest_westlab/Project Folders/Bioaco
   if (score_threshold_70 < 0.25) {score_threshold_70 = 0.25}
   if (score_threshold_65 < 0.25) {score_threshold_65 = 0.25}
   if (score_threshold_60 < 0.25) {score_threshold_60 = 0.25}
-  if (score_threshold_55 < 0.25) {score_threshold_55 = 0.25}
-  if (score_threshold_50 < 0.25) {score_threshold_50 = 0.25}
+  #if (score_threshold_55 < 0.25) {score_threshold_55 = 0.25}
+  #if (score_threshold_50 < 0.25) {score_threshold_50 = 0.25}
   
   # adding threshold values to list variables created earlier
   
-  t50_list[[i]] = score_threshold_50[[1]]
-  t55_list[[i]] = score_threshold_55[[1]]
+  #t50_list[[i]] = score_threshold_50[[1]]
+  #t55_list[[i]] = score_threshold_55[[1]]
   t60_list[[i]] = score_threshold_60[[1]]
   t65_list[[i]] = score_threshold_65[[1]]
   t70_list[[i]] = score_threshold_70[[1]]
@@ -123,8 +128,8 @@ for (i in 1:length(list.files("/CFANS_fwcb_elwest_westlab/Project Folders/Bioaco
 # after looping is complete, creating table with all values and saving as csv file
 
 threshold_table = data.frame(`Common Name` = unlist(common_name_list),
-                             t50 = unlist(t50_list),
-                             t55 = unlist(t55_list),
+                             #t50 = unlist(t50_list),
+                             #t55 = unlist(t55_list),
                              t60 = unlist(t60_list),
                              t65 = unlist(t65_list),
                              t70 = unlist(t70_list),

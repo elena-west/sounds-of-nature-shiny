@@ -9,7 +9,7 @@
 /* Main app size */
 
 body {
-  min-width: 1200px;
+  min-width: 600px;
   max-width: 1200px;
   height: auto;
   margin-left: auto;
@@ -25,7 +25,7 @@ a {
 /* Transparent breaks */
 
 hr {
-  border-color: #f3f3ed;
+  border-color: #264037;
 }
 
 /* Site/family/species selection headers */
@@ -54,7 +54,13 @@ img {
   margin-left: 25px;
 }
 
-/* Main app header (title panel text) */
+/* Cursor changed to "loading" during computations (must also be specified in .R app) */
+
+.loading-cursor, .loading-cursor * {
+  cursor: progress !important;
+}
+
+/* Main app header (title panel text and image) */
 
 .app_title {
   font-family: "Libre Franklin", sans-serif;
@@ -63,7 +69,18 @@ img {
   color: #264037;
 }
 
-/* Side panel box and text */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  gap: 5px;
+}
+
+.header > img {
+  margin-left: 20px;
+}
+
+/* Side panel box, text, and image */
 
 #sidebar {
   background-color: #8fcdcc;
@@ -72,6 +89,13 @@ img {
   font-weight: light;
   font-size: 16px;
   color: #264037;
+}
+
+#sidebar > img {
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 30px;
+  border: 1px solid #19807e;
 }
 
 /* Headers within side panel */
@@ -143,7 +167,7 @@ img {
 
 /* "Show all birds" button default appearance */
 
-#showall {
+#showallbirds {
   background-color: #bdcaab;
   border-color: #264037;
   font-family: "Libre Franklin", sans-serif;
@@ -154,7 +178,28 @@ img {
 
 /* "Show all birds" button when hovering */
 
-#showall:hover {
+#showallbirds:hover {
+  background-color: #ff6b00;
+  font-family: "Libre Franklin", sans-serif;
+  font-weight: bold;
+  font-size: 18px;
+  color: #ffe091;
+}
+
+/* "Show all biomes" button default appearance */
+
+#showallbiomes {
+  background-color: #bdcaab;
+  border-color: #264037;
+  font-family: "Libre Franklin", sans-serif;
+  font-weight: bold;
+  font-size: 18px;
+  color: #6e7d22;
+}
+
+/* "Show all biomes" button when hovering */
+
+#showallbiomes:hover {
   background-color: #ff6b00;
   font-family: "Libre Franklin", sans-serif;
   font-weight: bold;
@@ -204,6 +249,87 @@ img {
   color: #ffe091;
 }
 
+/* "Github Repo" button default appearance */
+
+#github {
+  background-color: #bdcaab;
+  border-color: #264037;
+  font-family: "Libre Franklin", sans-serif;
+  font-weight: bold;
+  font-size: 18px;
+  color: #6e7d22;
+  margin-left: 20px;
+}
+
+/* "Github Repo" button when hovering */
+
+#github:hover {
+  background-color: #ff6b00;
+  font-family: "Libre Franklin", sans-serif;
+  font-weight: bold;
+  font-size: 18px;
+  color: #ffe091;
+}
+
+/* "Show/Hide Column Descriptions" button default appearance */
+
+#tabledescriptions1 {
+  background-color: #bdcaab;
+  border-color: #264037;
+  font-family: "Libre Franklin", sans-serif;
+  font-weight: bold;
+  font-size: 18px;
+  color: #6e7d22;
+}
+
+#tabledescriptions2 {
+  background-color: #bdcaab;
+  border-color: #264037;
+  font-family: "Libre Franklin", sans-serif;
+  font-weight: bold;
+  font-size: 18px;
+  color: #6e7d22;
+}
+
+/* "Show/Hide Column Descriptions" button when hovering */
+
+#tabledescriptions1:hover {
+  background-color: #ff6b00;
+  font-family: "Libre Franklin", sans-serif;
+  font-weight: bold;
+  font-size: 18px;
+  color: #ffe091;
+}
+
+#tabledescriptions2:hover {
+  background-color: #ff6b00;
+  font-family: "Libre Franklin", sans-serif;
+  font-weight: bold;
+  font-size: 18px;
+  color: #ffe091;
+}
+
+/* "Show hist detections for all birds" button default appearance */
+
+#showallhist {
+  background-color: #bdcaab;
+  border-color: #264037;
+  font-family: "Libre Franklin", sans-serif;
+  font-weight: bold;
+  font-size: 18px;
+  color: #6e7d22;
+}
+
+/* "Show hist detections for all birds" button when hovering */
+
+#showallhist:hover {
+  background-color: #ff6b00;
+  font-family: "Libre Franklin", sans-serif;
+  font-weight: bold;
+  font-size: 18px;
+  color: #ffe091;
+}
+
 /* "Download data table as CSV" button default appearance */
 
 #download_button1 {
@@ -240,6 +366,264 @@ img {
   font-weight: bold;
   font-size: 18px;
   color: #ffe091;
+}
+
+/* About tab text */
+
+#about > h6 {
+  line-height: 23px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+#go_to_github {
+  text-align: center;
+}
+
+/* Bird silhouettes */
+
+.bird_icons {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 0px;
+}
+
+#songbirds.shiny-image-output.shiny-bound-output {
+  height: 100px !important;
+  display: inline-block;
+  text-align: center;
+  padding: 0px;
+  cursor: pointer;
+}
+
+#songbirds.shiny-image-output.shiny-bound-output.crosshair {
+  width: 100px !important;
+  height: 100px !important;
+}
+
+#songbirds > img {
+  margin-left: 0px !important;
+}
+
+#songbirds > img:hover {
+  filter: drop-shadow(0 0 1rem #ffb000)
+}
+
+#waterfowl.shiny-image-output.shiny-bound-output {
+  height: 100px !important;
+  /*width: 75% !important;*/
+  display: inline-block;
+  text-align: center;
+  padding: 0px;
+  cursor: pointer;
+}
+
+#waterfowl.shiny-image-output.shiny-bound-output.crosshair {
+  width: 100px !important;
+  height: 100px !important;
+}
+
+#waterfowl > img {
+  margin-left: 0px !important;
+}
+
+#waterfowl > img:hover {
+  filter: drop-shadow(0 0 1rem #fe6100)
+}
+
+#owls.shiny-image-output.shiny-bound-output {
+  height: 100px !important;
+  display: inline-block;
+  text-align: center;
+  padding: 0px;
+  cursor: pointer;
+}
+
+#owls.shiny-image-output.shiny-bound-output.crosshair {
+  width: 100px !important;
+  height: 100px !important;
+}
+
+#owls > img {
+  margin-left: 0px !important;
+}
+
+#owls > img:hover {
+  filter: drop-shadow(0 0 1rem #dc267f)
+}
+
+#shorebirds.shiny-image-output.shiny-bound-output {
+  height: 100px !important;
+  display: inline-block;
+  text-align: center;
+  padding: 0px;
+  cursor: pointer;
+}
+
+#shorebirds.shiny-image-output.shiny-bound-output.crosshair {
+  width: 127.48px !important;
+  height: 70px !important;
+}
+
+#shorebirds > img {
+  margin-left: 0px !important;
+  margin-top: 0px;
+}
+
+#shorebirds > img:hover {
+  filter: drop-shadow(0 0 1rem #785ef0)
+}
+
+#landbirds.shiny-image-output.shiny-bound-output {
+  height: 100px !important;
+  display: inline-block;
+  text-align: center;
+  padding: 0px;
+  cursor: pointer;
+}
+
+#landbirds.shiny-image-output.shiny-bound-output.crosshair {
+  width: 100px !important;
+  height: 100px !important;
+}
+
+#landbirds > img {
+  margin-left: 0px !important;
+}
+
+#landbirds > img:hover {
+  filter: drop-shadow(0 0 1rem #648fff)
+}
+
+/* Bird silhouette labels */
+
+#songbirds_label {
+  text-align: center;
+  margin-left: 25px;
+}
+
+#songbirds_label > h6 {
+  font-size: 14px !important;
+  font-style: italic;
+  font-weight: 600;
+  margin-top: 18px;
+}
+
+#waterfowl_label {
+  text-align: center;
+  margin-left: -75px;
+}
+
+#waterfowl_label > h6 {
+  font-size: 14px !important;
+  font-style: italic;
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+#owls_label {
+  text-align: center;
+  margin-left: -30px;
+}
+
+#owls_label > h6 {
+  font-size: 14px !important;
+  font-style: italic;
+  font-weight: 600;
+  margin-top: 18px;
+}
+
+#shorebirds_label {
+  text-align: center;
+  margin-left: 40px;
+}
+
+#shorebirds_label > h6 {
+  font-size: 14px !important;
+  font-style: italic;
+  font-weight: 600;
+  margin-top: 18px;
+}
+
+#landbirds_label {
+  text-align: center;
+  margin-left: 45px;
+}
+
+#landbirds_label > h6 {
+  font-size: 14px !important;
+  font-style: italic;
+  font-weight: 600;
+  margin-top: 18px;
+}
+
+/* Bird silhouette descriptions */
+
+#songbirds_text {
+  text-align: left;
+  margin-left: 10px;
+  margin-right: 35px;
+}
+
+#songbirds_text > h6 {
+  font-size: 13px !important;
+  margin-top: 10px;
+  line-height: 20px !important;
+}
+
+#waterfowl_text {
+  text-align: left;
+  margin-left: -40px;
+  margin-right: 15px;
+}
+
+#waterfowl_text > h6 {
+  font-size: 13px !important;
+  margin-top: 10px;
+  line-height: 20px !important;
+}
+
+#owls_text {
+  text-align: left;
+  margin-left: -20px;
+  margin-right: -2px;
+}
+
+#owls_text > h6 {
+  font-size: 13px !important;
+  margin-top: 10px;
+  line-height: 20px !important;
+}
+
+#shorebirds_text {
+  text-align: left;
+  margin-left: 0px;
+  margin-right: -50px;
+}
+
+#shorebirds_text > h6 {
+  font-size: 13px !important;
+  margin-top: 10px;
+  line-height: 20px !important;
+}
+
+#landbirds_text {
+  text-align: left;
+  margin-left: 50px;
+  margin-right: 0px;
+}
+
+#landbirds_text > h6 {
+  font-size: 13px !important;
+  margin-top: 10px;
+  line-height: 20px !important;
+}
+
+/* Species Selection text on tab 2 */
+
+#speciesselection > h6 {
+  text-align: center;
 }
 
 /* General table style */
@@ -299,15 +683,13 @@ table.dataTable thead {
 
 /* Change font color and add underline to hyperlinks in table (default + hover) - now works */
 
-table.dataTable td > a {
+table.dataTable td > u > em > a {
   color: #264037 !important;
-  text-decoration: underline !important;
 }
 
-table.dataTable td > a:hover {
+table.dataTable td > u > em > a:hover {
   color: #00706e !important;
   font-weight: 600;
-  text-decoration: underline !important;
 }
 
 /* Change font color of "Show entries", "Search", footer, and numbers of data table */
@@ -316,10 +698,30 @@ table.dataTable td > a:hover {
   color: #264037;
 }
 
-/* Bird family plot - change cursor to pointer */
+/* Plots */
 
 #birdfamily {
   cursor: pointer;
+}
+
+#speciesplot {
+  cursor: pointer;
+}
+
+#birdfamily > img {
+  margin-left: 0px !important;
+}
+
+#speciesplot > img {
+  margin-left: 0px !important;
+}
+
+#datehistogram > img {
+  margin-left: 0px !important;
+}
+
+#timehistogram > img {
+  margin-left: 0px !important;
 }
 
 /* Maps outline */
