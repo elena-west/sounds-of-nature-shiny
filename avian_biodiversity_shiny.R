@@ -817,10 +817,12 @@ createtimehistogram = function(site, species="overall", detection_prob="60", tex
         x = list(
           DayPeriod == "Morning" ~ scale_x_time(breaks = c(as_hms("05:00:00"), as_hms("06:00:00"),
                                                            as_hms("7:00:00"), as_hms("08:00:00"), 
-                                                           as_hms("09:00:00"))),
+                                                           as_hms("09:00:00")),
+                                                labels = scales::label_time(format = "%H:%M")),
           DayPeriod == "Evening" ~ scale_x_time(breaks = c(as_hms("19:00:00"), as_hms("20:00:00"), 
                                                            as_hms("21:00:00"), as_hms("22:00:00"), 
-                                                           as_hms("23:00:00")))
+                                                           as_hms("23:00:00")),
+                                                labels = scales::label_time(format = "%H:%M"))
         )
       ) +
       scale_y_continuous(n.breaks = 7) +
@@ -924,12 +926,14 @@ createtimehistogram = function(site, species="overall", detection_prob="60", tex
         facet_wrap(~DayPeriod, scales = "free_x", drop = FALSE) +
         facetted_pos_scales(
           x = list(
-            DayPeriod == "Morning" ~ scale_x_time(breaks = c(as_hms("05:00:00"), as_hms("06:00:00"), 
-                                                             as_hms("7:00:00"), as_hms("08:00:00"),
-                                                             as_hms("09:00:00"))),
+            DayPeriod == "Morning" ~ scale_x_time(breaks = c(as_hms("05:00:00"), as_hms("06:00:00"),
+                                                             as_hms("7:00:00"), as_hms("08:00:00"), 
+                                                             as_hms("09:00:00")),
+                                                  labels = scales::label_time(format = "%H:%M")),
             DayPeriod == "Evening" ~ scale_x_time(breaks = c(as_hms("19:00:00"), as_hms("20:00:00"), 
-                                                             as_hms("21:00:00"), as_hms("22:00:00"),
-                                                             as_hms("23:00:00")))
+                                                             as_hms("21:00:00"), as_hms("22:00:00"), 
+                                                             as_hms("23:00:00")),
+                                                  labels = scales::label_time(format = "%H:%M"))
           )
         ) +
         scale_y_continuous() +
@@ -987,11 +991,13 @@ createtimehistogram = function(site, species="overall", detection_prob="60", tex
         facetted_pos_scales(
           x = list(
             DayPeriod == "Morning" ~ scale_x_time(breaks = c(as_hms("05:00:00"), as_hms("06:00:00"),
-                                                             as_hms("7:00:00"), as_hms("08:00:00"),
-                                                             as_hms("09:00:00"))),
+                                                             as_hms("7:00:00"), as_hms("08:00:00"), 
+                                                             as_hms("09:00:00")),
+                                                  labels = scales::label_time(format = "%H:%M")),
             DayPeriod == "Evening" ~ scale_x_time(breaks = c(as_hms("19:00:00"), as_hms("20:00:00"), 
-                                                             as_hms("21:00:00"), as_hms("22:00:00"),
-                                                             as_hms("23:00:00")))
+                                                             as_hms("21:00:00"), as_hms("22:00:00"), 
+                                                             as_hms("23:00:00")),
+                                                  labels = scales::label_time(format = "%H:%M"))
           )
         ) +
         scale_y_continuous(n.breaks = 5) +
@@ -1299,7 +1305,7 @@ tab1tablehover = htmltools::withTags(table(
       th("Scientific Name", title = "Species scientific name - click the links to learn more about each species.", class = 'dt-head-left'),
       th("Common Name", title = "Species common name", class = 'dt-head-left'),
       th("Avian Group", title = "Taxonomic category to which a given species belongs.", class = 'dt-head-left'),
-      th("Detection Probability Range", title = "Each detection is given a probability score reflecting how likely it is to be a real detection of that species — for example, 95% means there is a 95% chance the detection is genuine. These probability scores are based on models we developed by manually reviewing thousands of recordings. This column shows the range of probability scores across all detections in the Total Detections column.", class = 'dt-head-left'),
+      th("Detection Probability Range", title = "Each detection is given a probability score reflecting how likely it is to be a real detection of that species. For example, 95% means there is a 95% chance the detection is a true positive. These probability scores are based on models we developed by manually reviewing thousands of recordings. This column shows the range of probability scores across all detections.", class = 'dt-head-left'),
       th("Total Detections", title = "The number of times this species was detected at this site above our confidence threshold. Because BirdNET analyzes audio in 3-second segments, a single bird can produce many detections, so this number reflects acoustic activity rather than the number of individual birds present.", class = 'dt-head-left')
     )
   )
@@ -1315,7 +1321,7 @@ tab2tablehover = htmltools::withTags(table(
       th("Biome Type", title = "Primary vegetation type found at site, either 'forest' or 'grassland'", class = 'dt-head-left'),
       th("Scientific Name", title = "Species scientific name - click the links to learn more about each species.", class = 'dt-head-left'),
       th("Common Name", title = "Species common name", class = 'dt-head-left'),
-      th("Detection Probability Range", title = "Each detection is given a probability score reflecting how likely it is to be a real detection of that species — for example, 95% means there is a 95% chance the detection is genuine. These probability scores are based on models we developed by manually reviewing thousands of recordings. This column shows the range of probability scores across all detections in the Total Detections column.", class = 'dt-head-left'),
+      th("Detection Probability Range", title = "Each detection is given a probability score reflecting how likely it is to be a real detection of that species. For example, 95% means there is a 95% chance the detection is a true positive. These probability scores are based on models we developed by manually reviewing thousands of recordings. This column shows the range of probability scores across all detections.", class = 'dt-head-left'),
       th("Total Detections", title = "The number of times this species was detected at this site above our confidence threshold. Because BirdNET analyzes audio in 3-second segments, a single bird can produce many detections, so this number reflects acoustic activity rather than the number of individual birds present.", class = 'dt-head-left')
     )
   )
@@ -1354,10 +1360,11 @@ ui = fluidPage(
   br(),
   sidebarPanel(id="sidebar",
                #img(src="Sounds_of_Nature_Logo.jpg", height = 80, width = 222),
-               p(strong("Welcome to the ", em("Sounds of Nature Minnesota"), " Data Visualizer!"), "This dashboard allows users to explore the diversity of bird species detected on public and private lands sampled during the spring migration and summer breeding periods using", em("Passive Acoustic Monitoring."), " During the 2025 field season we collected 30,000 hours of audio data. Our analysis has yielded ", em("7,951,449"), " BirdNET detections of ", em("203"), " species across all sites. As of June 2026, we are completing manual validations of BirdNET detections to reduce false positives and assign accuracy probabilities to detections."),
+               p(strong("Welcome to the ", em("Sounds of Nature Minnesota"), " Data Visualizer!"), "This dashboard allows users to explore the diversity of bird species detected on public and private sites across Minnesota. Our goal is to understand bird diversity across the state, particularly in areas that are understudided, like private lands. This work would not be possible without the help of our citizen science volunteers, who are helping to collect bird vocalization data using autonomous recording units (ARUs)."),
                br(),
                p(strong("Tab 1:", em("Search by Site"))),
                #p(tags$div(class = "sidebar_header", "Tab 1:<em>Search by Site</em>")),
+               p("Sites were sampled during the spring migration and summer breeding periods using", em("Passive Acoustic Monitoring."), "We collected over 30,000 hours of audio data during the 2025 field season. Our analysis has yielded 7,951,449 BirdNET detections of 203 species across all sites. As of June 2026, we are completing manual validations of BirdNET detections to reduce false positives and assign accuracy probabilities to detections."),
                p(strong(em("Start")), "by zooming into your area of interest on the map. You can hover over pins to see their 5-digit site code. Alternatively, if you know your site code, you can enter it in the search bar in the top left corner of the map, below the 'Reset map view' button. Once you have found your site,", strong(em("click on a pin")), "to learn more about what birds were detected at that location. Use the selection menu below the statistics box to filter species detections by minimum detection probability.", em("Note: To protect sensitive species and landowner privacy, we have moved location coordinates to public sites within 3 miles (5 km) of sampling locations.")),
                p(strong(em("Next,")), "you will see a bar chart below the map representing the different avian groups detected at each site. Unfamiliar with any bird categories? Click on the bird icons below the plot to read about each avian group. In the plot, click on a bar (i.e., avian group) to filter the data table below to explore what species within that group were detected at a given site. Click on the scientific names in the table to learn more about each species. To view all the species detected at a site, click on the green ", strong("Show all birds at this site"), " button below the plot. Hover over column names or scroll below the data table for column descriptions."),
                p(strong(em("Finally,")), "scroll below the data table and column descriptions to view all bird detections over time at your selected site. Click on a species in the data table to see species-specific detections over time. Click the ", strong("Show all bird detections at this site"), " button below the column descriptions to reset the figures."),
@@ -1711,7 +1718,7 @@ server = function(input, output) {
         br(),
         h6(HTML(glue("<strong>Avian Group:</strong> Taxonomic category to which a given species
                        belongs."))),
-        h6(HTML(glue("<strong>Detection Probability Range:</strong> Each detection is given a probability score reflecting how likely it is to be a real detection of that species — for example, 95% means there is a 95% chance the detection is genuine. These probability scores are based on models we developed by manually reviewing thousands of recordings. This column shows the range of probability scores across all detections in the Total Detections column."))),
+        h6(HTML(glue("<strong>Detection Probability Range:</strong> Each detection is given a probability score reflecting how likely it is to be a real detection of that species. For example, 95% means there is a 95% chance the detection is a true positive. These probability scores are based on models we developed by manually reviewing thousands of recordings. This column shows the range of probability scores across all detections."))),
         h6(HTML(glue("<strong>Total Detections:</strong> The number of times this species was
                        detected at this site above our confidence threshold. Because BirdNET analyzes
                        audio in 3-second segments, a single bird can produce many detections, so this
@@ -2084,7 +2091,7 @@ server = function(input, output) {
           br(),
           h6(HTML(glue("<strong>Avian Group:</strong> Taxonomic category to which a given species
                          belongs."))),
-          h6(HTML(glue("<strong>Detection Probability Range:</strong> Each detection is given a probability score reflecting how likely it is to be a real detection of that species — for example, 95% means there is a 95% chance the detection is genuine. These probability scores are based on models we developed by manually reviewing thousands of recordings. This column shows the range of probability scores across all detections in the Total Detections column."))),
+          h6(HTML(glue("<strong>Detection Probability Range:</strong> Each detection is given a probability score reflecting how likely it is to be a real detection of that species. For example, 95% means there is a 95% chance the detection is a true positive. These probability scores are based on models we developed by manually reviewing thousands of recordings. This column shows the range of probability scores across all detections."))),
           h6(HTML(glue("<strong>Total Detections:</strong> The number of times this species was
                          detected at this site above our confidence threshold. Because BirdNET analyzes
                          audio in 3-second segments, a single bird can produce many detections, so this
@@ -2178,7 +2185,7 @@ server = function(input, output) {
           br(),
           h6(HTML(glue("<strong>Biome Type:</strong> Primary vegetation type found at site, either
                        'forest' or 'grassland'."))),
-          h6(HTML(glue("<strong>Detection Probability Range:</strong> Each detection is given a probability score reflecting how likely it is to be a real detection of that species — for example, 95% means there is a 95% chance the detection is genuine. These probability scores are based on models we developed by manually reviewing thousands of recordings. This column shows the range of probability scores across all detections in the Total Detections column."))),
+          h6(HTML(glue("<strong>Detection Probability Range:</strong> Each detection is given a probability score reflecting how likely it is to be a real detection of that species. For example, 95% means there is a 95% chance the detection is a true positive. These probability scores are based on models we developed by manually reviewing thousands of recordings. This column shows the range of probability scores across all detections."))),
           h6(HTML(glue("<strong>Total Detections:</strong> The number of times this species was
                        detected at this site above our confidence threshold. Because BirdNET analyzes
                        audio in 3-second segments, a single bird can produce many detections, so this
@@ -2251,7 +2258,7 @@ server = function(input, output) {
           br(),
           h6(HTML(glue("<strong>Biome Type:</strong> Primary vegetation type found at site, either
                        'forest' or 'grassland'."))),
-          h6(HTML(glue("<strong>Detection Probability Range:</strong> Each detection is given a probability score reflecting how likely it is to be a real detection of that species — for example, 95% means there is a 95% chance the detection is genuine. These probability scores are based on models we developed by manually reviewing thousands of recordings. This column shows the range of probability scores across all detections in the Total Detections column."))),
+          h6(HTML(glue("<strong>Detection Probability Range:</strong> Each detection is given a probability score reflecting how likely it is to be a real detection of that species. For example, 95% means there is a 95% chance the detection is a true positive. These probability scores are based on models we developed by manually reviewing thousands of recordings. This column shows the range of probability scores across all detections."))),
           h6(HTML(glue("<strong>Total Detections:</strong> The number of times this species was
                        detected at this site above our confidence threshold. Because BirdNET analyzes
                        audio in 3-second segments, a single bird can produce many detections, so this
@@ -2457,7 +2464,7 @@ server = function(input, output) {
   output$about = renderUI({HTML(
     paste(
       h6(HTML(glue(
-        "<em>Sounds of Nature MN</em> leverages citizen science, passive acoustic monitoring, and a deep artificial neural network, to examine avian biodiversity on both public and private lands across Minnesota's three major biomes (Laurentian Mixed Forest, Eastern Broadleaf Forest, and Prairie Grasslands). Autonomous Recording Units (ARUs) were programmed to record continuously for 4 hours at sunrise (15 minutes pre and 225 minutes post) from May 15 - June 30, 2025 and for 2 hours at sunset (15 minutes pre and 105 minutes post) from June 1 - June 30, 2025. These devices were deployed on private lands of volunteer study participants and on public lands, including Scientific Natural Areas (SNAs) and Wildlife Management Areas (WMAs). Over 30,000 hours of audio were recorded across 124 sites in 2025. Audio data was run through BirdNET¹, capable of rapidly identifying thousands of species from audio. To account for false positives produced by this tool, an extensive data validation process was performed for every species detected in this study, following the protocol laid out by Symes et al. (2024)². This project is made possible with support from the University of Minnesota and Minnesota’s Environment and Natural Resources Trust Fund (ENRTF). Partners include the Minnesota Department of Natural Resources, the Minnesota Cooperative Fish and Wildlife Research Unit, Audubon Upper Mississippi River, and our citizen science volunteers and collaborators."
+        "<em>Sounds of Nature MN</em> leverages citizen science, passive acoustic monitoring, and a deep artificial neural network, to examine avian biodiversity on public and private lands across Minnesota's three major biomes (Laurentian Mixed Forest, Eastern Broadleaf Forest, and Prairie Grasslands). Autonomous Recording Units (ARUs) were programmed to record continuously for 4 hours beginning at sunrise from May 15 - June 30, and for 2 hours at sunset from June 1 - June 30 (to coincide with peak migration and breeding periods, respectively, for birds in this region). Devices were deployed on private lands of volunteer study participants and on public lands, including Scientific Natural Areas (SNAs) and Wildlife Management Areas (WMAs). Over 30,000 hours of audio were recorded across 124 sites in 2025. Audio data was run through BirdNET¹, a convolutional neural network capable of rapidly identifying thousands of species from audio. To account for false positives produced by this tool, an extensive data validation process was performed for every species detected in this study, following the protocol laid out by Symes et al. (2024)². This project is made possible with support from the University of Minnesota and Minnesota’s Environment and Natural Resources Trust Fund (ENRTF). Partners include the Minnesota Department of Natural Resources, the Minnesota Cooperative Fish and Wildlife Research Unit, Audubon Upper Mississippi River, and our citizen science volunteers and collaborators."
       ))),
       br(),
       h6(tags$ol(
@@ -2479,7 +2486,7 @@ server = function(input, output) {
   # overall
   output$footer = renderUI({
     HTML(paste(
-      h6("This research is made possible with support from the University of Minnesota and Minnesota's Environment and Natural Resources Trust Fund. Partners include the Minnesota Department of Natural Resources, the Minnesota Cooperative Fish and Wildlife Research Unit, Audubon Upper Mississippi River, and our citizen science volunteers and collaborators."), h6("App last updated on June 4th, 2026."), h6(HTML(glue("<em><strong>Contact us at:</strong></em> <u>soundsofnature@umn.edu</u>")))
+      h6("This research is made possible with support from the University of Minnesota and Minnesota's Environment and Natural Resources Trust Fund. Partners include the Minnesota Department of Natural Resources, the Minnesota Cooperative Fish and Wildlife Research Unit, Audubon Upper Mississippi River, and our citizen science volunteers and collaborators."), h6("App last updated on June 18th, 2026."), h6(HTML(glue("<em><strong>Contact us at:</strong></em> <u>soundsofnature@umn.edu</u>")))
     ))
   })
 }
