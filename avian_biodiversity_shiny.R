@@ -81,6 +81,10 @@ rawsitedata = bind_rows(privatesitedata, publicsitedata)
 rm(privatesitedatalist)
 rm(publicsitedatalist)
 
+private_dpd = read_csv("birdnet_avg_detections_per_day_private.csv")
+public_dpd = read_csv("birdnet_avg_detections_per_day_public.csv")
+avg_dpd_df = bind_rows(private_dpd, public_dpd)
+
 #### Creating Icons for Map and Mapping Site Location Data (Default Map First Displayed on Tab 1)
 
 geogss = geogs %>% mutate(
@@ -251,6 +255,8 @@ avg_detections = prettyNum(round(mean(total_detections$`Total Site Detections`))
 
 alldetections = prettyNum(sum(cleanedsites$`Total Detections`), big.mark = ",")
 
+overall_avg_dpd = prettyNum(round(mean(avg_dpd_df$Average_Detections_Per_Day)), big.mark = ",")
+
 #### Functions for Shiny App (zoom-adjusted)
 
 filtersites = function(site, detection_prob="60") {
@@ -367,6 +373,11 @@ species_stats = function(site) {
 
 detections_stats = function(site) {
   val = total_detections %>% filter(`Site Number` == site) %>% pull(`Total Site Detections`)
+  return(val)
+}
+
+avg_dpd_stats = function(site) {
+  val = avg_dpd_df %>% filter(Site == site) %>% pull(Average_Detections_Per_Day)
   return(val)
 }
 
@@ -1392,7 +1403,7 @@ ui = fluidPage(
         br(),
         htmlOutput("site_stats_header"),
         fluidRow(
-          column(11, hidden(htmlOutput("site_statistics")))
+          column(12, hidden(htmlOutput("site_statistics")))
         ),
         br(),
         fluidRow(
@@ -1650,6 +1661,7 @@ server = function(input, output) {
     currentprob1("60") # default
     totalspecies = species_stats(currentsite())
     totaldetections = prettyNum(detections_stats(currentsite()), big.mark = ",")
+    avg_dpd = prettyNum(round(avg_dpd_stats(currentsite())), big.mark = ",")
     currentownership = site_ownership(currentsite())
     currentbiome = site_biome(currentsite())
     
@@ -1663,13 +1675,13 @@ server = function(input, output) {
         tags$li(
           HTML(glue(
             "<strong>{totalspecies}</strong> unique species and <strong>{totaldetections}</strong> total bird
-            detections at site {currentsite()}."
+            detections at site {currentsite()}, compared to an average of <strong>{avg_species}</strong> unique species and an average of <strong>{avg_detections}</strong> total
+            bird detections across all sites."
           ))
         ), 
         tags$li(
           HTML(glue(
-            "Compare to an average of <strong>{avg_species}</strong> unique species and an average of <strong>{avg_detections}</strong> total
-            bird detections across all sites."
+            "<strong>{avg_dpd}</strong> average detections per day at site {currentsite()}, compared to an average of <strong>{overall_avg_dpd}</strong> detections per day across all sites."
           ))
         )
       )))
@@ -2486,7 +2498,7 @@ server = function(input, output) {
   # overall
   output$footer = renderUI({
     HTML(paste(
-      h6("This research is made possible with support from the University of Minnesota and Minnesota's Environment and Natural Resources Trust Fund. Partners include the Minnesota Department of Natural Resources, the Minnesota Cooperative Fish and Wildlife Research Unit, Audubon Upper Mississippi River, and our citizen science volunteers and collaborators."), h6("App last updated on June 18th, 2026."), h6(HTML(glue("<em><strong>Contact us at:</strong></em> <u>soundsofnature@umn.edu</u>")))
+      h6("This research is made possible with support from the University of Minnesota and Minnesota's Environment and Natural Resources Trust Fund. Partners include the Minnesota Department of Natural Resources, the Minnesota Cooperative Fish and Wildlife Research Unit, Audubon Upper Mississippi River, and our citizen science volunteers and collaborators."), h6("App last updated on August 24th, 2026."), h6(HTML(glue("<em><strong>Contact us at:</strong></em> <u>soundsofnature@umn.edu</u>")))
     ))
   })
 }
