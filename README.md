@@ -16,7 +16,9 @@ The Sounds of Nature Minnesota results can be accessed through an <a href="https
 <br> </br> 
 
 *Data processing scripts*
-* birdnet_analysis_thresholds.py: script analyzing which species were detected at each site and the number of detections of those species 
+* birdnet_analysis_thresholds.py: script analyzing which species were detected at each site and the number of detections of those species
+  
+* birdnet_sites_datetimes.py: script calculating the average number of bird detections per day at each site
 
 * confidence_thresholds.Rmd: modified R code taken from Cornell’s BirdNET/Raven guide calculating threshold values for each species (output is threshold_table.csv)
 
@@ -30,8 +32,12 @@ The Sounds of Nature Minnesota results can be accessed through an <a href="https
 
 * birdfamilies_updated.csv: CSV file containing up-to-date species names, common names, and links to all target birds (Cornell All About Birds)
 
+* birdnet_avg_detections_per_day_private.csv: CSV file containing the average number of bird detections per day for each private site (output of birdnet_sites_datetimes.py)
+  
+* birdnet_avg_detections_per_day_public.csv: CSV file containing the average number of bird detections per day for each public site (output of birdnet_sites_datetimes.py)
+
 * private_sites_results: folder containing one CSV file per private site that contains processed species detection data (output of birdnet_analysis_thresholds.py)
 
 * public_sites_results: folder containing one CSV file per public site that contains processed species detection data (output of birdnet_analysis_thresholds.py)
 
-* www: folder containing CSS stylesheet (biodiversity_styles.css) and footer logos used by the Sounds of Nature Shiny app
+* www: folder containing CSS stylesheet (biodiversity_styles.css), hand-drawn avian silhouettes, and footer logos used by the Sounds of Nature Shiny app
