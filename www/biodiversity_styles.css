@@ -9,7 +9,7 @@
 /* Main app size */
 
 body {
-  min-width: 600px;
+  min-width: 320px;
   max-width: 1200px;
   height: auto;
   margin-left: auto;
@@ -54,6 +54,13 @@ img {
   margin-left: 25px;
 }
 
+/* Bulleted list margins */
+
+ul {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
 /* Cursor changed to "loading" during computations (must also be specified in .R app) */
 
 .loading-cursor, .loading-cursor * {
@@ -74,10 +81,36 @@ img {
   align-items: center;
   justify-content: left;
   gap: 5px;
+  height: 175px;
+  /*width: 425px;*/
 }
 
 .header > img {
+  max-width: 425px;
+  width: 100%;
+  height: auto;
   margin-left: 20px;
+}
+
+/* header size for phones */
+@media (max-width: 600px) {
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    gap: 5px;
+    /*height: 124px;*/
+    /*max-width: 300px;*/
+  }
+  .header > img {
+    max-width: 250px;
+    width: 100%;
+    height: auto;
+    margin-left: 10px;
+  }
+  .app_title {
+    font-size: 16px;
+  }
 }
 
 /* Side panel box, text, and image */
@@ -380,17 +413,57 @@ img {
   text-align: center;
 }
 
-/* Bird silhouettes */
+/* Bird silhouettes, labels, text formatting */
 
-.bird_icons {
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  gap: 0px;
+.bird_icons > .row, .bird_labels > .row {
+  display: flex !important;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: flex-start;
 }
 
+.bird_icons > .row > div, .bird_labels > .row > div {
+  flex: 1 1 0;
+  min-width: 0; /* allows for shrinking below content size instead of just overflowing */
+  padding-left: 2px;
+  padding-right: 2px;
+  text-align: center;
+}
+
+@media (min-width: 768px) { /* bootstrap breakpoint */
+  .bird_text > .row {
+    display: flex !important;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: flex-start;
+  }
+  .bird_text > .row > div {
+    flex: 1 1 0;
+    min-width: 0;
+    padding-left: 2px;
+    padding-right: 2px;
+  }
+}
+
+/*empty column formatting*/
+.bird_icons > .row > div:empty,
+.bird_labels > .row > div:empty,
+.bird_text > .row > div:empty {
+  flex: 0.25 1 0;
+}
+
+/* Bird silhouettes */
+
+/* .bird_icons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+*/
+
 #songbirds.shiny-image-output.shiny-bound-output {
-  height: 100px !important;
+  height: 10rem !important;
   display: inline-block;
   text-align: center;
   padding: 0px;
@@ -398,12 +471,14 @@ img {
 }
 
 #songbirds.shiny-image-output.shiny-bound-output.crosshair {
-  width: 100px !important;
-  height: 100px !important;
+  width: 10rem !important;
+  height: 10rem !important;
 }
 
 #songbirds > img {
   margin-left: 0px !important;
+  width: 10rem !important;
+  height: 10rem !important;
 }
 
 #songbirds > img:hover {
@@ -411,7 +486,7 @@ img {
 }
 
 #waterfowl.shiny-image-output.shiny-bound-output {
-  height: 100px !important;
+  height: 10rem !important;
   /*width: 75% !important;*/
   display: inline-block;
   text-align: center;
@@ -420,12 +495,14 @@ img {
 }
 
 #waterfowl.shiny-image-output.shiny-bound-output.crosshair {
-  width: 100px !important;
-  height: 100px !important;
+  width: 10rem !important;
+  height: 10rem !important;
 }
 
 #waterfowl > img {
   margin-left: 0px !important;
+  width: 10rem !important;
+  height: 10rem !important;
 }
 
 #waterfowl > img:hover {
@@ -433,7 +510,7 @@ img {
 }
 
 #owls.shiny-image-output.shiny-bound-output {
-  height: 100px !important;
+  height: 10rem !important;
   display: inline-block;
   text-align: center;
   padding: 0px;
@@ -441,12 +518,14 @@ img {
 }
 
 #owls.shiny-image-output.shiny-bound-output.crosshair {
-  width: 100px !important;
-  height: 100px !important;
+  width: 10rem !important;
+  height: 10rem !important;
 }
 
 #owls > img {
   margin-left: 0px !important;
+  width: 10rem !important;
+  height: 10rem !important;
 }
 
 #owls > img:hover {
@@ -454,7 +533,9 @@ img {
 }
 
 #shorebirds.shiny-image-output.shiny-bound-output {
-  height: 100px !important;
+  /* height: 10rem !important; */
+  width: 10rem !important;
+  height: 5.5rem !important;
   display: inline-block;
   text-align: center;
   padding: 0px;
@@ -462,13 +543,19 @@ img {
 }
 
 #shorebirds.shiny-image-output.shiny-bound-output.crosshair {
-  width: 127.48px !important;
-  height: 70px !important;
+  /* width: 12.6rem !important; */
+  /* height: 7rem !important; */
+  width: 10rem !important;
+  height: 5.5rem !important;
 }
 
 #shorebirds > img {
   margin-left: 0px !important;
-  margin-top: 0px;
+  margin-top: 20px !important;
+  /* width: 12.6rem !important; */
+  width: 10rem !important;
+  height: 5.5rem !important;
+  /* height: 7rem !important; */
 }
 
 #shorebirds > img:hover {
@@ -476,7 +563,7 @@ img {
 }
 
 #landbirds.shiny-image-output.shiny-bound-output {
-  height: 100px !important;
+  height: 10rem !important;
   display: inline-block;
   text-align: center;
   padding: 0px;
@@ -484,23 +571,118 @@ img {
 }
 
 #landbirds.shiny-image-output.shiny-bound-output.crosshair {
-  width: 100px !important;
-  height: 100px !important;
+  width: 10rem !important;
+  height: 10rem !important;
 }
 
 #landbirds > img {
   margin-left: 0px !important;
+  width: 10rem !important;
+  height: 10rem !important;
 }
 
 #landbirds > img:hover {
   filter: drop-shadow(0 0 1rem #648fff)
 }
 
+/* silhouette sizes for phones */
+@media (max-width: 600px) {
+  #songbirds.shiny-image-output.shiny-bound-output {
+    height: 5rem !important;
+    display: inline-block;
+    text-align: center;
+    padding: 0px;
+    cursor: pointer;
+  }
+  #songbirds.shiny-image-output.shiny-bound-output.crosshair {
+    width: 5rem !important;
+    height: 5rem !important;
+  }
+  #songbirds > img {
+    margin-left: 0px !important;
+    width: 5rem !important;
+    height: 5rem !important;
+  }
+  #waterfowl.shiny-image-output.shiny-bound-output {
+    height: 5rem !important;
+    /*width: 75% !important;*/
+    display: inline-block;
+    text-align: center;
+    padding: 0px;
+    cursor: pointer;
+  }
+  #waterfowl.shiny-image-output.shiny-bound-output.crosshair {
+    width: 5rem !important;
+    height: 5rem !important;
+  }
+  #waterfowl > img {
+    margin-left: 0px !important;
+    width: 5rem !important;
+    height: 5rem !important;
+  }
+  #owls.shiny-image-output.shiny-bound-output {
+    height: 5rem !important;
+    display: inline-block;
+    text-align: center;
+    padding: 0px;
+    cursor: pointer;
+  }
+  #owls.shiny-image-output.shiny-bound-output.crosshair {
+    width: 5rem !important;
+    height: 5rem !important;
+  }
+  #owls > img {
+    margin-left: 0px !important;
+    width: 5rem !important;
+    height: 5rem !important;
+  }
+  #shorebirds.shiny-image-output.shiny-bound-output {
+    /* height: 10rem !important; */
+    width: 5rem !important;
+    height: 2.75rem !important;
+    display: inline-block;
+    text-align: center;
+    padding: 0px;
+    cursor: pointer;
+  }
+  #shorebirds.shiny-image-output.shiny-bound-output.crosshair {
+    /* width: 12.6rem !important; */
+    /* height: 7rem !important; */
+    width: 5rem !important;
+    height: 2.75rem !important;
+  }
+  #shorebirds > img {
+    margin-left: 0px !important;
+    margin-top: 10px !important;
+    /* width: 12.6rem !important; */
+    width: 5rem !important;
+    height: 2.75rem !important;
+    /* height: 7rem !important; */
+  }
+  #landbirds.shiny-image-output.shiny-bound-output {
+    height: 5rem !important;
+    display: inline-block;
+    text-align: center;
+    padding: 0px;
+    cursor: pointer;
+  }
+  #landbirds.shiny-image-output.shiny-bound-output.crosshair {
+    width: 5rem !important;
+    height: 5rem !important;
+  }
+  #landbirds > img {
+    margin-left: 0px !important;
+    width: 5rem !important;
+    height: 5rem !important;
+  }
+}
+
+
 /* Bird silhouette labels */
 
 #songbirds_label {
   text-align: center;
-  margin-left: 25px;
+  /*margin-left: 0.1rem;*/
 }
 
 #songbirds_label > h6 {
@@ -512,19 +694,19 @@ img {
 
 #waterfowl_label {
   text-align: center;
-  margin-left: -75px;
+  /*margin-left: 0px;*/
 }
 
 #waterfowl_label > h6 {
   font-size: 14px !important;
   font-style: italic;
   font-weight: 600;
-  margin-top: 10px;
+  margin-top: 18px;
 }
 
 #owls_label {
   text-align: center;
-  margin-left: -30px;
+  /*margin-left: -1rem;*/
 }
 
 #owls_label > h6 {
@@ -536,7 +718,7 @@ img {
 
 #shorebirds_label {
   text-align: center;
-  margin-left: 40px;
+  /*margin-left: -1.5rem;*/
 }
 
 #shorebirds_label > h6 {
@@ -548,7 +730,7 @@ img {
 
 #landbirds_label {
   text-align: center;
-  margin-left: 45px;
+  /*margin-left: -1.5rem;*/
 }
 
 #landbirds_label > h6 {
@@ -558,12 +740,46 @@ img {
   margin-top: 18px;
 }
 
+/* labels sizes for phones */
+@media (max-width: 600px) {
+  #songbirds_label > h6 {
+    font-size: 8.5px !important;
+    font-style: italic;
+    font-weight: 600;
+    margin-top: 11px;
+  }
+  #waterfowl_label > h6 {
+    font-size: 8.5px !important;
+    font-style: italic;
+    font-weight: 600;
+    margin-top: 11px;
+  }
+  #owls_label > h6 {
+    font-size: 8.5px !important;
+    font-style: italic;
+    font-weight: 600;
+    margin-top: 11px;
+  }
+  #shorebirds_label > h6 {
+    font-size: 8.5px !important;
+    font-style: italic;
+    font-weight: 600;
+    margin-top: 11px;
+  }
+  #landbirds_label > h6 {
+    font-size: 8.5px !important;
+    font-style: italic;
+    font-weight: 600;
+    margin-top: 11px;
+  }
+}
+
+
 /* Bird silhouette descriptions */
 
 #songbirds_text {
-  text-align: left;
-  margin-left: 10px;
-  margin-right: 35px;
+  text-align: center;
+  margin: 10px;
 }
 
 #songbirds_text > h6 {
@@ -573,9 +789,8 @@ img {
 }
 
 #waterfowl_text {
-  text-align: left;
-  margin-left: -40px;
-  margin-right: 15px;
+  text-align: center;
+  margin: 10px;
 }
 
 #waterfowl_text > h6 {
@@ -585,9 +800,8 @@ img {
 }
 
 #owls_text {
-  text-align: left;
-  margin-left: -20px;
-  margin-right: -2px;
+  text-align: center;
+  margin: 10px;
 }
 
 #owls_text > h6 {
@@ -597,9 +811,8 @@ img {
 }
 
 #shorebirds_text {
-  text-align: left;
-  margin-left: 0px;
-  margin-right: -50px;
+  text-align: center;
+  margin: 10px;
 }
 
 #shorebirds_text > h6 {
@@ -609,9 +822,8 @@ img {
 }
 
 #landbirds_text {
-  text-align: left;
-  margin-left: 50px;
-  margin-right: 0px;
+  text-align: center;
+  margin: 10px;
 }
 
 #landbirds_text > h6 {
@@ -692,6 +904,14 @@ table.dataTable td > u > em > a:hover {
   font-weight: 600;
 }
 
+/* Put data tables in horizontally scrollable containers */
+
+.table {
+  overflow-x: auto;
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch; /* smooth scrolling on iOS */
+}
+
 /* Change font color of "Show entries", "Search", footer, and numbers of data table */
 
 #DataTables_Table_0_filter, #DataTables_Table_0_length, #DataTables_Table_0_info, #DataTables_Table_0_paginate {
@@ -763,6 +983,10 @@ table.dataTable td > u > em > a:hover {
   border-width: thin;
   border-radius: 4px;
   padding-right: auto;
+}
+
+#site_statistics > h6 {
+  line-height: 1.5 !important;
 }
 
 /* Columns info text boxes */

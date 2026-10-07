@@ -31,13 +31,13 @@ showtext_opts(dpi = 96)
 
 #### Reading Data
 
-geogs = read_csv("aru_coords_2025.csv") %>%
+geogs = read_csv("modified_aru_coords_2025.csv") %>%
   mutate("Biome Type" = case_when(
     `Forest, Grassland,` == "F" ~ "Forest",
     TRUE ~ "Grassland"
   )
   ) %>% 
-  select(-Lat, -Long, -`Forest, Grassland,`) 
+  select(-`Forest, Grassland,`) 
 
 original_sb <- c("Song Birds")
 replacement_sb <- c("Songbirds")
@@ -459,7 +459,7 @@ makesitemap = function(site) {
   return(map)
 }
 
-createbirdplot = function(site, detection_prob="60", text_scale = 1) {
+createbirdplot = function(site, detection_prob="60", text_scale = 1, wrap = 1440) {
   filtered_df = filtersites(site, detection_prob) %>% 
     group_by(Family) %>% 
     count()
@@ -467,6 +467,9 @@ createbirdplot = function(site, detection_prob="60", text_scale = 1) {
   plottitle = paste0("Number of Species Detected within Each Avian Group at Site ", site)
   maxn = max(filtered_df$n) + 10
   adjusted_lineheight = 0.55 / text_scale
+  title_wrap = if (wrap < 978 && wrap >= 601) {53} else if (wrap < 601) {26} else {65}
+  subtitle_wrap = if (wrap < 601) {36} else {70}
+  x_label = if (wrap < 601) {12} else {16}
   ggplot(filtered_df) +
     geom_col(aes(x = Family, y = n, fill = Family),
              color = "#264037") +
@@ -480,15 +483,15 @@ createbirdplot = function(site, detection_prob="60", text_scale = 1) {
     scale_y_continuous(limits = c(0, maxn), breaks = seq(0, maxn, by = 10)) +
     scale_fill_manual(values = c("Songbirds" = "#ffb000", "Waterfowl & Wading Birds" = "#fe6100", "Owls & Other Raptors" = "#dc267f", "Shorebirds" = "#785ef0", "Other Land Birds" = "#648fff")) +
     labs(x = "Avian Group", y = "Species Detected",
-         title = str_wrap(plottitle, 50),
-         subtitle = str_wrap("Click on a bar to explore the corresponding species in the data table!", 70)) +
+         title = str_wrap(plottitle, title_wrap),
+         subtitle = str_wrap("Click on a bar to explore the corresponding species in the data table!", subtitle_wrap)) +
     theme(legend.position = "none",
           axis.text = element_text(family = 'libre',
-                                   size = 18 * text_scale,
+                                   size = x_label * text_scale,
                                    color = "#264037",
                                    lineheight = adjusted_lineheight),
           axis.title = element_text(family = 'libre',
-                                    size = 20 * text_scale,
+                                    size = 22 * text_scale,
                                     color = "#264037",
                                     lineheight = adjusted_lineheight),
           #legend.title = element_text(family = 'libre',
@@ -498,12 +501,12 @@ createbirdplot = function(site, detection_prob="60", text_scale = 1) {
           #size = 16,
           #color = "#264037"),
           plot.title = element_text(family = 'libre',
-                                    size = 24 * text_scale,
+                                    size = 26 * text_scale,
                                     face = 'bold',
                                     color = "#264037",
                                     lineheight = adjusted_lineheight),
           plot.subtitle = element_text(family = 'libre',
-                                       size = 19 * text_scale,
+                                       size = 22 * text_scale,
                                        color = "#264037",
                                        lineheight = adjusted_lineheight),
           #panel.grid = element_line(color = "#ddebe6"),
@@ -517,11 +520,11 @@ createbirdplot = function(site, detection_prob="60", text_scale = 1) {
           plot.background = element_rect(linewidth = 1,
                                          color = "#c5d1cd",
                                          fill = "#fffffa"),
-          plot.margin = margin(t = 14, r = 60, b = 14, l = 14)
+          plot.margin = margin(t = 14, r = 40, b = 14, l = 14)
     ) 
 }
 
-createdatehistogram = function(site, species="overall", detection_prob="60", text_scale = 1) {
+createdatehistogram = function(site, species="overall", detection_prob="60", text_scale = 1, wrap = 1440) {
   if (species == "overall") {
     df = cleaningsites %>% 
       filter(`Site Number` == site,
@@ -560,6 +563,8 @@ createdatehistogram = function(site, species="overall", detection_prob="60", tex
     
     plottitle = paste0("Bird Detections at Site ", site, " by Date")
     adjusted_lineheight = 0.55 / text_scale
+    title_wrap = if (wrap < 601) {27} else {50}
+    subtitle_wrap = if (wrap < 601) {33} else {70}
     
     maxn = max(tempdf$Count) + 20
     
@@ -576,14 +581,15 @@ createdatehistogram = function(site, species="overall", detection_prob="60", tex
       #size = 18/.pt, #* text_scale,
       #vjust = -0.5) +
       scale_x_date(date_breaks = "4 days") +
-      scale_y_continuous(limits = c(0, maxn), n.breaks = 7) + #breaks = seq(0, maxn, by = 200)) +
+      scale_y_continuous(labels = scales::comma_format(), 
+                         limits = c(0, maxn), n.breaks = 7) + #breaks = seq(0, maxn, by = 200)) +
       labs(x = "Dates", y = "Number of Detections",
-           subtitle = "60% detection probability or higher; each bar represents 1 day",
-           title = str_wrap(plottitle, 50)) +
+           subtitle = str_wrap("60% detection probability or higher; each bar represents 1 day", subtitle_wrap),
+           title = str_wrap(plottitle, title_wrap)) +
       #theme_bw(base_size = 18) +
       theme(
         axis.text = element_text(family = 'libre',
-                                 size = 18 * text_scale,
+                                 size = 16 * text_scale,
                                  color = "#264037",
                                  lineheight = adjusted_lineheight),
         axis.text.x = element_text(
@@ -591,16 +597,16 @@ createdatehistogram = function(site, species="overall", detection_prob="60", tex
           vjust = 1,
           hjust = 1),
         axis.title = element_text(family = 'libre',
-                                  size = 20 * text_scale,
+                                  size = 22 * text_scale,
                                   color = "#264037",
                                   lineheight = adjusted_lineheight),
         plot.title = element_text(family = 'libre',
-                                  size = 24 * text_scale,
+                                  size = 26 * text_scale,
                                   face = 'bold',
                                   color = "#264037",
                                   lineheight = adjusted_lineheight),
         plot.subtitle = element_text(family = 'libre',
-                                     size = 19 * text_scale,
+                                     size = 22 * text_scale,
                                      color = "#264037",
                                      lineheight = adjusted_lineheight),
         panel.grid.major.x = element_blank(),
@@ -647,6 +653,8 @@ createdatehistogram = function(site, species="overall", detection_prob="60", tex
     val = if (species %in% sgcnbirds_wsymbol | species == "Eastern Screech-Owl²") {str_sub(species, 1, -2)} else {species}
     plottitle = paste0(val, " Detections at Site ", site, " by Date")
     adjusted_lineheight = 0.55 / text_scale
+    title_wrap = if (wrap < 601) {27} else {50}
+    subtitle_wrap = if (wrap < 601) {33} else {70}
     
     maxn = max(tempdf$Count) + 2
     
@@ -665,15 +673,16 @@ createdatehistogram = function(site, species="overall", detection_prob="60", tex
         #size = 18/.pt, #* text_scale,
         #vjust = -0.5) +
         scale_x_date(date_breaks = "1 day") +
-        scale_y_continuous(limits = c(0, maxn), breaks = seq(0, maxn, 1)) +
+        scale_y_continuous(labels = scales::comma_format(),
+                           limits = c(0, maxn), breaks = seq(0, maxn, 1)) +
         labs(x = "Dates", y = "Number of Detections",
-             subtitle = "60% detection probability or higher; each bar represents 1 day",
-             title = str_wrap(plottitle, 50)) +
+             subtitle = str_wrap("60% detection probability or higher; each bar represents 1 day", subtitle_wrap),
+             title = str_wrap(plottitle, title_wrap)) +
         #theme_bw(base_size = 18) +
         theme(
           
           axis.text = element_text(family = 'libre',
-                                   size = 18 * text_scale,
+                                   size = 16 * text_scale,
                                    color = "#264037",
                                    lineheight = adjusted_lineheight),
           axis.text.x = element_text(
@@ -681,16 +690,16 @@ createdatehistogram = function(site, species="overall", detection_prob="60", tex
             vjust = 1,
             hjust = 1),
           axis.title = element_text(family = 'libre',
-                                    size = 20 * text_scale,
+                                    size = 22 * text_scale,
                                     color = "#264037",
                                     lineheight = adjusted_lineheight),
           plot.title = element_text(family = 'libre',
-                                    size = 24 * text_scale,
+                                    size = 26 * text_scale,
                                     face = 'bold',
                                     color = "#264037",
                                     lineheight = adjusted_lineheight),
           plot.subtitle = element_text(family = 'libre',
-                                       size = 19 * text_scale,
+                                       size = 22 * text_scale,
                                        color = "#264037",
                                        lineheight = adjusted_lineheight),
           panel.grid.major.x = element_blank(),
@@ -720,15 +729,16 @@ createdatehistogram = function(site, species="overall", detection_prob="60", tex
         #size = 18/.pt, #* text_scale,
         #vjust = -0.5) +
         scale_x_date(date_breaks = "4 days") +
-        scale_y_continuous(limits = c(0, maxn), n.breaks = 7) +
+        scale_y_continuous(labels = scales::comma_format(),
+                           limits = c(0, maxn), n.breaks = 7) +
         labs(x = "Dates", y = "Number of Detections",
-             subtitle = "60% detection probability or higher; each bar represents 1 day",
-             title = str_wrap(plottitle, 50)) +
+             subtitle = str_wrap("60% detection probability or higher; each bar represents 1 day", subtitle_wrap),
+             title = str_wrap(plottitle, title_wrap)) +
         #theme_bw(base_size = 17) +
         theme(
           
           axis.text = element_text(family = 'libre',
-                                   size = 18 * text_scale,
+                                   size = 16 * text_scale,
                                    color = "#264037",
                                    lineheight = adjusted_lineheight),
           axis.text.x = element_text(
@@ -736,16 +746,16 @@ createdatehistogram = function(site, species="overall", detection_prob="60", tex
             vjust = 1,
             hjust = 1),
           axis.title = element_text(family = 'libre',
-                                    size = 20 * text_scale,
+                                    size = 22 * text_scale,
                                     color = "#264037",
                                     lineheight = adjusted_lineheight),
           plot.title = element_text(family = 'libre',
-                                    size = 24 * text_scale,
+                                    size = 26 * text_scale,
                                     face = 'bold',
                                     color = "#264037",
                                     lineheight = adjusted_lineheight),
           plot.subtitle = element_text(family = 'libre',
-                                       size = 19 * text_scale,
+                                       size = 22 * text_scale,
                                        color = "#264037",
                                        lineheight = adjusted_lineheight),
           panel.grid.major.x = element_blank(),
@@ -763,7 +773,7 @@ createdatehistogram = function(site, species="overall", detection_prob="60", tex
   }
 }
 
-createtimehistogram = function(site, species="overall", detection_prob="60", text_scale = 1) {
+createtimehistogram = function(site, species="overall", detection_prob="60", text_scale = 1, wrap = 1440) {
   if (species == "overall") {
     df = cleaningsites %>% 
       filter(`Site Number` == site,
@@ -814,6 +824,8 @@ createtimehistogram = function(site, species="overall", detection_prob="60", tex
     plottitle = paste0("Bird Detections at Site ", site, " by Time of Day")
     subtt = "60% detection probability or higher; each bar represents a 1-hour time interval"
     adjusted_lineheight = 0.55 / text_scale
+    title_wrap = if (wrap < 601) {27} else {50}
+    subtitle_wrap = if (wrap < 978 && wrap >= 601) {59} else if (wrap < 601) {33} else {85}
     
     maxn = max(tempdf$Count) + 20
     
@@ -836,14 +848,14 @@ createtimehistogram = function(site, species="overall", detection_prob="60", tex
                                                 labels = scales::label_time(format = "%H:%M"))
         )
       ) +
-      scale_y_continuous(n.breaks = 7) +
-      labs(x = "Times", y = "Number of Detections",
-           title = str_wrap(plottitle, 50),
-           subtitle = subtt) +
+      scale_y_continuous(labels = scales::comma_format(), n.breaks = 7) +
+      labs(x = "Time of Day", y = "Number of Detections",
+           title = str_wrap(plottitle, title_wrap),
+           subtitle = str_wrap(subtt, subtitle_wrap)) +
       #theme_bw(base_size = 17) +
       theme(
         axis.text = element_text(family = 'libre',
-                                 size = 18 * text_scale,
+                                 size = 16 * text_scale,
                                  color = "#264037",
                                  lineheight = adjusted_lineheight),
         axis.text.x = element_text(
@@ -851,20 +863,20 @@ createtimehistogram = function(site, species="overall", detection_prob="60", tex
           vjust = 1,
           hjust = 1),
         axis.title = element_text(family = 'libre',
-                                  size = 20 * text_scale,
+                                  size = 22 * text_scale,
                                   color = "#264037",
                                   lineheight = adjusted_lineheight),
         plot.title = element_text(family = 'libre',
-                                  size = 24 * text_scale,
+                                  size = 26 * text_scale,
                                   face = 'bold',
                                   color = "#264037",
                                   lineheight = adjusted_lineheight),
         plot.subtitle = element_text(family = 'libre',
-                                     size = 19 * text_scale,
+                                     size = 22 * text_scale,
                                      color = "#264037",
                                      lineheight = adjusted_lineheight),
         strip.text = element_text(family = 'libre',
-                                  size = 18 * text_scale,
+                                  size = 20 * text_scale,
                                   color = "#264037"),
         strip.background = element_rect(fill = "#8fcdcc"),
         panel.grid.major.x = element_blank(),
@@ -923,6 +935,8 @@ createtimehistogram = function(site, species="overall", detection_prob="60", tex
     plottitle = paste0(val, " Detections at Site ", site, " by Time of Day")
     subtt = "60% detection probability or higher; each bar represents a 1-hour time interval"
     adjusted_lineheight = 0.55 / text_scale
+    title_wrap = if (wrap < 601) {27} else {50}
+    subtitle_wrap = if (wrap < 978) {59} else if (wrap < 601) {33} else {85}
     
     maxn = max(tempdf$Count) + 2
     
@@ -947,14 +961,14 @@ createtimehistogram = function(site, species="overall", detection_prob="60", tex
                                                   labels = scales::label_time(format = "%H:%M"))
           )
         ) +
-        scale_y_continuous() +
-        labs(x = "Times", y = "Number of Detections",
-             title = str_wrap(plottitle, 50),
-             subtitle = subtt) +
+        scale_y_continuous(labels = scales::comma_format()) +
+        labs(x = "Time of Day", y = "Number of Detections",
+             title = str_wrap(plottitle, title_wrap),
+             subtitle = str_wrap(subtt, subtitle_wrap)) +
         #theme_bw(base_size = 17) +
         theme(
           axis.text = element_text(family = 'libre',
-                                   size = 18 * text_scale,
+                                   size = 16 * text_scale,
                                    color = "#264037",
                                    lineheight = adjusted_lineheight),
           axis.text.x = element_text(
@@ -962,20 +976,20 @@ createtimehistogram = function(site, species="overall", detection_prob="60", tex
             vjust = 1,
             hjust = 1),
           axis.title = element_text(family = 'libre',
-                                    size = 20 * text_scale,
+                                    size = 22 * text_scale,
                                     color = "#264037",
                                     lineheight = adjusted_lineheight),
           plot.title = element_text(family = 'libre',
-                                    size = 24 * text_scale,
+                                    size = 26 * text_scale,
                                     face = 'bold',
                                     color = "#264037",
                                     lineheight = adjusted_lineheight),
           plot.subtitle = element_text(family = 'libre',
-                                       size = 19 * text_scale,
+                                       size = 22 * text_scale,
                                        color = "#264037",
                                        lineheight = adjusted_lineheight),
           strip.text = element_text(family = 'libre',
-                                    size = 18 * text_scale,
+                                    size = 20 * text_scale,
                                     color = "#264037"),
           strip.background = element_rect(fill = "#8fcdcc"),
           panel.grid.major.x = element_blank(),
@@ -1011,14 +1025,14 @@ createtimehistogram = function(site, species="overall", detection_prob="60", tex
                                                   labels = scales::label_time(format = "%H:%M"))
           )
         ) +
-        scale_y_continuous(n.breaks = 5) +
-        labs(x = "Times", y = "Number of Detections",
-             title = str_wrap(plottitle, 50),
-             subtitle = subtt) +
+        scale_y_continuous(labels = scales::comma_format(), n.breaks = 5) +
+        labs(x = "Time of Day", y = "Number of Detections",
+             title = str_wrap(plottitle, title_wrap),
+             subtitle = str_wrap(subtt, subtitle_wrap)) +
         #theme_bw(base_size = 17) +
         theme(
           axis.text = element_text(family = 'libre',
-                                   size = 18 * text_scale,
+                                   size = 16 * text_scale,
                                    color = "#264037",
                                    lineheight = adjusted_lineheight),
           axis.text.x = element_text(
@@ -1026,20 +1040,20 @@ createtimehistogram = function(site, species="overall", detection_prob="60", tex
             vjust = 1,
             hjust = 1),
           axis.title = element_text(family = 'libre',
-                                    size = 20 * text_scale,
+                                    size = 22 * text_scale,
                                     color = "#264037",
                                     lineheight = adjusted_lineheight),
           plot.title = element_text(family = 'libre',
-                                    size = 24 * text_scale,
+                                    size = 26 * text_scale,
                                     face = 'bold',
                                     color = "#264037",
                                     lineheight = adjusted_lineheight),
           plot.subtitle = element_text(family = 'libre',
-                                       size = 18 * text_scale,
+                                       size = 22 * text_scale,
                                        color = "#264037",
                                        lineheight = adjusted_lineheight),
           strip.text = element_text(family = 'libre',
-                                    size = 18 * text_scale,
+                                    size = 20 * text_scale,
                                     color = "#264037"),
           strip.background = element_rect(fill = "#8fcdcc"),
           panel.grid.major.x = element_blank(),
@@ -1240,13 +1254,14 @@ filterbiomes = function(species, detection_prob="60", biome) {
   return(joined_df)
 }
 
-createspeciesplot = function(species, detection_prob="60", text_scale = 1) {
+createspeciesplot = function(species, detection_prob="60", text_scale = 1, wrap = 1440) {
   filtered_df = filterspecies(species, detection_prob) %>% 
     group_by(`Biome Type`) %>% 
     count()
   filtered_df$`Biome Type` = factor(filtered_df$`Biome Type`, levels = c("Forest", "Grassland")) # ensures that even if a species is not represented at one biome type, the empty biome type bar is still shown on plot
   val = if (species %in% sgcnbirds_wsymbol | species == "Eastern Screech-Owl²") {str_sub(species, 1, -2)} else {species}
   plottitle = paste0(val, " Detection Sites by Biome")
+  title_wrap = if (wrap < 601) {30} else {40}
   maxn = max(filtered_df$n) + 10
   adjusted_lineheight = 0.55 / text_scale
   ggplot(filtered_df) +
@@ -1260,14 +1275,14 @@ createspeciesplot = function(species, detection_prob="60", text_scale = 1) {
               size = 18/.pt * text_scale,
               vjust = -0.5) +
     labs(x = "Biome Type", y = "Number of Sites",
-         title = str_wrap(plottitle, 40)
+         title = str_wrap(plottitle, title_wrap)
     ) +
     scale_x_discrete(labels = label_wrap(15), drop = FALSE) +
     scale_y_continuous(limits = c(0, maxn), breaks = seq(0, maxn, by = 20)) +
     scale_fill_manual(values = c("Forest" = "#ffb000", "Grassland" = "#fe6100")) +
     theme(legend.position = "none",
           axis.text = element_text(family = 'libre',
-                                   size = 18 * text_scale,
+                                   size = 16 * text_scale,
                                    color = "#264037",
                                    lineheight = adjusted_lineheight),
           axis.title = element_text(family = 'libre',
@@ -1342,6 +1357,61 @@ tab2tablehover = htmltools::withTags(table(
 
 ui = fluidPage(
   #tags$script(src = "https://kit.fontawesome.com/df8147df33.js"),  # To use custom icons on map
+  tags$script(HTML("
+  var reloadTimer = null;
+  var lastWidth = window.innerWidth;
+  var shinyBusy = false;
+
+  $(document).on('shiny:busy', function() {
+    shinyBusy = true;
+  });
+  $(document).on('shiny:idle', function() {
+    shinyBusy = false;
+  });
+
+  function scheduleReload(delay) {
+    if (reloadTimer) clearTimeout(reloadTimer);
+    reloadTimer = setTimeout(function() {
+      // Don't reload if Shiny is actively computing --
+      // wait and re-check shortly after instead.
+      if (shinyBusy) {
+        scheduleReload(300);
+        return;
+      }
+      location.href = location.href.split('#')[0];
+    }, delay);
+  }
+
+  // Orientation change (phones/tablets)
+  window.addEventListener('orientationchange', function() {
+    scheduleReload(200);
+  });
+
+  // Zoom change (Ctrl/Cmd +/-, View > Zoom) via devicePixelRatio watch
+  function watchZoom() {
+    var mql = matchMedia('(resolution: ' + window.devicePixelRatio + 'dppx)');
+    mql.addEventListener('change', function() {
+      scheduleReload(200);
+    }, { once: true });
+  }
+  watchZoom();
+
+  // Window resize -- only reload if WIDTH actually changed by a
+  // meaningful amount. Small shifts (a few px) can happen from
+  // layout reflows (e.g. content show/hide) rather than real
+  // user-driven resizing, so we ignore tiny deltas.
+  window.addEventListener('resize', function() {
+    if (Math.abs(window.innerWidth - lastWidth) > 10) {
+      lastWidth = window.innerWidth;
+      scheduleReload(600);
+    }
+  });
+                   ")),
+  # ^ If screen orientation changes on phone/tablet, user zooms in, or window resized, then
+  # app reloads after slight delay to preserve accurate graph displays
+  # ignores height-only changes caused by scrolling on phone/tablet
+  # and prevents accidental default zoom on phones
+  
   setBackgroundColor(color = "#f3f3ed"),
   includeCSS("www/biodiversity_styles.css"),
   useShinyjs(),
@@ -1350,14 +1420,14 @@ ui = fluidPage(
                        spinner_size = "40px"),
   fav("crow"), # adding crow favicon from FontAwesome to app
   tags$head(
-    tags$title("Sounds of Nature MN 2025")
+    tags$meta(name = "viewport", content = "width=device-width, initial-scale=1"),
+    tags$title("Sounds of Nature MN")
   ),
   titlePanel(
     div(
       class = "header",
-      img(src="Sounds_of_Nature_Logo_3.png", alt = "Sounds of Nature logo", 
-          height = 175, width = 425),
-      tags$div(class = "app_title", "2025 Avian Biodiversity Visualizer")
+      img(src="Sounds_of_Nature_Logo_3.png", alt = "Sounds of Nature logo"),
+      tags$div(class = "app_title", "Avian Biodiversity Visualizer")
     )
     #fluidRow(
     #column(3, img(src="Sounds_of_Nature_Logo.png", height = 80, width = 240)),
@@ -1371,7 +1441,7 @@ ui = fluidPage(
   br(),
   sidebarPanel(id="sidebar",
                #img(src="Sounds_of_Nature_Logo.jpg", height = 80, width = 222),
-               p(strong("Welcome to the ", em("Sounds of Nature Minnesota"), " Data Visualizer!"), "This dashboard allows users to explore the diversity of bird species detected on public and private sites across Minnesota. Our goal is to understand bird diversity across the state, particularly in areas that are understudided, like private lands. This work would not be possible without the help of our citizen science volunteers, who are helping to collect bird vocalization data using autonomous recording units (ARUs)."),
+               p(strong("Welcome to the ", em("Sounds of Nature Minnesota"), " Data Visualizer!"), "This dashboard allows users to explore the diversity of bird species detected on public and private sites across Minnesota in 2025. Our goal is to understand bird diversity across the state, particularly in areas that are understudied, like private lands. This work would not be possible without the help of our citizen science volunteers, who are helping to collect bird vocalization data using autonomous recording units (ARUs)."),
                br(),
                p(strong("Tab 1:", em("Search by Site"))),
                #p(tags$div(class = "sidebar_header", "Tab 1:<em>Search by Site</em>")),
@@ -1393,8 +1463,9 @@ ui = fluidPage(
         htmlOutput("spacer1"),
         fluidRow(
           column(6, htmlOutput("siteselection")),
-          column(2, hidden(actionButton(inputId = "zoomtomn", label = "Zoom to MN"))),
-          column(4, hidden(actionButton(inputId = "resetmap", label = "Reset map and data")))
+          column(1),
+          column(2, hidden(actionButton(inputId = "zoomtomn", label = HTML("Zoom<br>to MN")))),
+          column(3, hidden(actionButton(inputId = "resetmap", label = HTML("Reset map<br>and data"))))
         ),
         br(),
         fluidRow(
@@ -1414,35 +1485,42 @@ ui = fluidPage(
         ),
         br(),
         fluidRow(
-          #column(1),
-          column(12, tags$div(class = "plot", plotOutput("birdfamily", click = "familyclick", 
-                                                         width = "840px", height = "400px")))#,
-          #column(1)
+          column(12, tags$div(class = "plot", plotOutput("birdfamily", click = "familyclick")))#, 
+                                                         #width = "900px", height = "400px")))#,
         ),
         br(),
-        fluidRow(
-          tags$div(class = "bird_icons", 
-                   hidden(imageOutput("songbirds", click = "songbirds_click")),
-                   hidden(imageOutput("waterfowl", click = "waterfowl_click")),
-                   hidden(imageOutput("owls", click = "owls_click")),
-                   hidden(imageOutput("shorebirds", click = "shorebirds_click")),
-                   hidden(imageOutput("landbirds", click = "landbirds_click"))
+        tags$div(class = "bird_icons",
+          fluidRow(
+             column(1),
+             column(2, hidden(imageOutput("songbirds", click = "songbirds_click"))),
+             column(2, hidden(imageOutput("waterfowl", click = "waterfowl_click"))),
+             column(2, hidden(imageOutput("owls", click = "owls_click"))),
+             column(2, hidden(imageOutput("shorebirds", click = "shorebirds_click"))),
+             column(2, hidden(imageOutput("landbirds", click = "landbirds_click"))),
+             column(1)
           )
         ),
-        fluidRow(
-          column(2, hidden(htmlOutput("songbirds_label"))),
-          column(1),
-          column(2, hidden(htmlOutput("waterfowl_label"))),
-          column(2, hidden(htmlOutput("owls_label"))),
-          column(2, hidden(htmlOutput("shorebirds_label"))),
-          column(3, hidden(htmlOutput("landbirds_label")))
+        tags$div(class = "bird_labels",
+          fluidRow(
+            column(1),
+            column(2, hidden(htmlOutput("songbirds_label"))),
+            column(2, hidden(htmlOutput("waterfowl_label"))),
+            column(2, hidden(htmlOutput("owls_label"))),
+            column(2, hidden(htmlOutput("shorebirds_label"))),
+            column(2, hidden(htmlOutput("landbirds_label"))),
+            column(1)
+          )
         ),
-        fluidRow(
-          column(3, hidden(htmlOutput("songbirds_text"))),
-          column(2, hidden(htmlOutput("waterfowl_text"))),
-          column(2, hidden(htmlOutput("owls_text"))),
-          column(2, hidden(htmlOutput("shorebirds_text"))),
-          column(3, hidden(htmlOutput("landbirds_text")))
+        tags$div(class = "bird_text",
+          fluidRow(
+            column(1),
+            column(2, hidden(htmlOutput("songbirds_text"))),
+            column(2, hidden(htmlOutput("waterfowl_text"))),
+            column(2, hidden(htmlOutput("owls_text"))),
+            column(2, hidden(htmlOutput("shorebirds_text"))),
+            column(2, hidden(htmlOutput("landbirds_text"))),
+            column(1)
+          )
         ),
         br(),
         br(),
@@ -1507,8 +1585,8 @@ ui = fluidPage(
         br(),
         br(),
         fluidRow(
-          column(8, tags$div(class = "plot", plotOutput("speciesplot", click = "biomeclick",
-                                                        width = "600px", height = "400px"))),
+          column(8, tags$div(class = "plot", plotOutput("speciesplot", click = "biomeclick"))),
+                                                        #width = "600px", height = "400px"))),
           column(4)
         ),
         br(),
@@ -1588,7 +1666,7 @@ ui = fluidPage(
 )
 
 
-server = function(input, output) {
+server = function(input, output, session) {
   
   # variables holding default values to be changed for future use
   
@@ -1621,6 +1699,8 @@ server = function(input, output) {
   timehistogram = reactiveVal("")
   window_width = reactive(shinybrowser::get_width())
   window_height = reactive(shinybrowser::get_height())
+  pixel_ratio = reactive(session$clientData$pixelratio)
+  frozen_pixel_ratio = reactiveVal(NULL)
   
   # tab 2
   currentspecies = reactiveVal("")
@@ -1635,13 +1715,29 @@ server = function(input, output) {
   columninfo2 = reactiveVal("")
   window_width = reactive(shinybrowser::get_width())
   window_height = reactive(shinybrowser::get_height())
+  pixel_ratio = reactive(session$clientData$pixelratio)
+  frozen_pixel_ratio = reactiveVal(NULL)
   
-  # when map clicked, table and plot updated to show data from specific site
+  # ensure that pixel ratio used for scale factor is based on initial ratio (zoom doesn't impact sf)
   
-  # tab 1
-  observeEvent(input$map_marker_click, {
+  # all tabs
+  
+  observe({
+    req(session$clientData$pixelratio)
+    isolate({
+      if (is.null(frozen_pixel_ratio())) {
+        frozen_pixel_ratio(session$clientData$pixelratio)
+      }
+    })
+  })
+  
+  # ensure user's inputs saved if app reloads when zooming or resizing window
+  
+  # mainly tab 1 (lot of info)
+  
+  loadSite = function(site, prob = "60") {
     
-    currentsite(input$map_marker_click$id)
+    currentsite(site)
     
     map(makesitemap(currentsite()))
     
@@ -1658,7 +1754,7 @@ server = function(input, output) {
     
     shinyjs::show("detectionprob1") # reveal detection prob filtering
     
-    currentprob1("60") # default
+    currentprob1(prob)
     totalspecies = species_stats(currentsite())
     totaldetections = prettyNum(detections_stats(currentsite()), big.mark = ",")
     avg_dpd = prettyNum(round(avg_dpd_stats(currentsite())), big.mark = ",")
@@ -1675,8 +1771,8 @@ server = function(input, output) {
         tags$li(
           HTML(glue(
             "<strong>{totalspecies}</strong> unique species and <strong>{totaldetections}</strong> total bird
-            detections at site {currentsite()}, compared to an average of <strong>{avg_species}</strong> unique species and an average of <strong>{avg_detections}</strong> total
-            bird detections across all sites."
+          detections at site {currentsite()}, compared to an average of <strong>{avg_species}</strong> unique species and an average of <strong>{avg_detections}</strong> total
+          bird detections across all sites."
           ))
         ), 
         tags$li(
@@ -1691,11 +1787,9 @@ server = function(input, output) {
     df(filtersites(currentsite(), currentprob1()))
     
     birdbarplot({
-      #diagonalpx = sqrt((window_width()**2)+(window_height()**2))
-      scale_factor = 1440/window_width() #diagonalpx/1686 # diagonal of MacBook Pro
-      #num = window_width()/1440
-      #scale_factor = abs(((1-(1/num))/6.3) - (1/num))
-      createbirdplot(currentsite(), currentprob1(), text_scale = scale_factor)
+      scale_factor = frozen_pixel_ratio()/2
+      width = if (!is.null(window_width()) && !is.na(window_width())) window_width() else 1440
+      createbirdplot(currentsite(), currentprob1(), text_scale = scale_factor, wrap = width)
     })
     
     shinyjs::show("songbirds") # reveal bird icons
@@ -1725,17 +1819,17 @@ server = function(input, output) {
     columninfo1(
       paste(
         h6(HTML(glue("<em>Audio was recorded at sites across Minnesota and processed using BirdNET,
-                       a machine learning tool for identifying birds by sound. Detections were
-                       filtered using statistical models to reduce false positives.</em>"))),
+                     a machine learning tool for identifying birds by sound. Detections were
+                     filtered using statistical models to reduce false positives.</em>"))),
         br(),
         h6(HTML(glue("<strong>Avian Group:</strong> Taxonomic category to which a given species
-                       belongs."))),
+                     belongs."))),
         h6(HTML(glue("<strong>Detection Probability Range:</strong> Each detection is given a probability score reflecting how likely it is to be a real detection of that species. For example, 95% means there is a 95% chance the detection is a true positive. These probability scores are based on models we developed by manually reviewing thousands of recordings. This column shows the range of probability scores across all detections."))),
         h6(HTML(glue("<strong>Total Detections:</strong> The number of times this species was
-                       detected at this site above our confidence threshold. Because BirdNET analyzes
-                       audio in 3-second segments, a single bird can produce many detections, so this
-                       number reflects acoustic activity rather than the number of individual birds
-                       present."))),
+                     detected at this site above our confidence threshold. Because BirdNET analyzes
+                     audio in 3-second segments, a single bird can produce many detections, so this
+                     number reflects acoustic activity rather than the number of individual birds
+                     present."))),
         br(),
         h6(HTML(glue("<strong>¹</strong> Species of Greatest Conservation Need (SGCN)"))),
         h6(HTML(glue("<strong>²</strong> Species in Need of Information (SNI)")))
@@ -1749,25 +1843,90 @@ server = function(input, output) {
     
     shinyjs::addClass(selector = "body", class = "loading-cursor") # show loading cursor
     datehistogram({
-      #num = window_width()/1440
-      #scale_factor = abs(((1-(1/num))/6.3) - (1/num))
-      scale_factor = 1440/window_width()
-      createdatehistogram(site=currentsite(), detection_prob=currentprob1(), text_scale=scale_factor)
+      scale_factor = frozen_pixel_ratio()/2
+      width = if (!is.null(window_width()) && !is.na(window_width())) window_width() else 1440
+      createdatehistogram(site=currentsite(), detection_prob=currentprob1(), 
+                          text_scale=scale_factor, wrap = width)
     })
     timehistogram({
-      #num = window_width()/1440
-      #scale_factor = abs(((1-(1/num))/6.3) - (1/num))
-      scale_factor = 1440/window_width()
-      createtimehistogram(site=currentsite(), detection_prob=currentprob1(), text_scale=scale_factor)
+      scale_factor = frozen_pixel_ratio()/2
+      width = if (!is.null(window_width()) && !is.na(window_width())) window_width() else 1440
+      createtimehistogram(site=currentsite(), detection_prob=currentprob1(), text_scale=scale_factor, 
+                          wrap = width)
     })
     shinyjs::delay(100, shinyjs::removeClass(selector = "body", class = "loading-cursor")) # back to normal cursor
-    #shinyjs::show("download_button1") # show download button
+    
     shinyjs::show("columninfoheader1") # show column info header
     shinyjs::show("columninfo1") # show column info by default
     shinyjs::show("tabledescriptions1") # show table descriptions button
     shinyjs::hide("showallbirds") # birds reset button hidden
     shinyjs::show("hist_header") # show histogram header
     shinyjs::show("hist_text") # show histogram description
+  }
+  
+  
+  # restore app state using URL for initial app load only; continuation of above code block
+  
+  restored = reactiveVal(FALSE)
+  
+  observe({
+    req(window_width())  # wait until shinybrowser sends back window width
+    req(!restored())
+    
+    query = parseQueryString(session$clientData$url_search)
+    
+    if (!is.null(query$site) && currentsite() == "") {
+      prob = if (!is.null(query$prob1)) query$prob1 else "60"
+      loadSite(query$site, prob = prob)
+    }
+    
+    if (!is.null(query$species)) {
+      updateSelectInput(session, "species", selected = query$species)
+    }
+    if (!is.null(query$prob2)) {
+      updateSelectInput(session, "detectionprob2", selected = paste0(query$prob2, "%"))
+    }
+    if (!is.null(query$tab)) {
+      updateTabsetPanel(session, "tabs", selected = query$tab)
+    }
+    
+    restored(TRUE)  
+    
+  }) |> bindEvent(session$clientData$url_search, window_width(), once = FALSE)
+  
+  
+  observe({
+    query_parts = c()
+    
+    if (currentsite() != "") {
+      query_parts = c(query_parts, paste0("site=", URLencode(currentsite())))
+    }
+    if (currentprob1() != "") {
+      query_parts = c(query_parts, paste0("prob1=", currentprob1()))
+    }
+    if (currentspecies() != "") {
+      query_parts = c(query_parts, paste0("species=", URLencode(currentspecies())))
+    }
+    if (currentprob2() != "") {
+      query_parts = c(query_parts, paste0("prob2=", currentprob2()))
+    }
+    if (!is.null(input$tabs)) {
+      query_parts = c(query_parts, paste0("tab=", URLencode(input$tabs)))
+    }
+    
+    if (length(query_parts) > 0) {
+      updateQueryString(paste0("?", paste(query_parts, collapse = "&")), mode = "replace")
+    }
+  })
+  
+  
+  # OTHER OBSERVE EVENTS
+  
+  # when map clicked, table and plot updated to show data from specific site
+  
+  # tab 1
+  observeEvent(input$map_marker_click, {
+    loadSite(input$map_marker_click$id)
   })
   
   # when zoom to MN button clicked, map view zooms in/out to show whole of MN
@@ -1981,14 +2140,16 @@ server = function(input, output) {
     datehistogram({
       #num = window_width()/1440
       #scale_factor = abs(((1-(1/num))/6.3) - (1/num))
-      scale_factor = 1440/window_width()
-      createdatehistogram(currentsite(), species, currentprob1(), scale_factor)
+      scale_factor = frozen_pixel_ratio()/2 #1440/window_width()
+      width = if (!is.null(window_width()) && !is.na(window_width())) window_width() else 1440
+      createdatehistogram(currentsite(), species, currentprob1(), scale_factor, wrap = width)
     })
     timehistogram({
       #num = window_width()/1440
       #scale_factor = abs(((1-(1/num))/6.3) - (1/num))
-      scale_factor = 1440/window_width()
-      createtimehistogram(currentsite(), species, currentprob1(), scale_factor)
+      scale_factor = frozen_pixel_ratio()/2 #1440/window_width()
+      width = if (!is.null(window_width()) && !is.na(window_width())) window_width() else 1440
+      createtimehistogram(currentsite(), species, currentprob1(), scale_factor, wrap = width)
     })
     shinyjs::show("showallhist") # show histogram reset button
   })
@@ -2001,14 +2162,16 @@ server = function(input, output) {
     datehistogram({
       #num = window_width()/1440
       #scale_factor = abs(((1-(1/num))/6.3) - (1/num))
-      scale_factor = 1440/window_width()
-      createdatehistogram(site=currentsite(), detection_prob=currentprob1(), text_scale=scale_factor)
+      scale_factor = frozen_pixel_ratio()/2 #1440/window_width()
+      width = if (!is.null(window_width()) && !is.na(window_width())) window_width() else 1440
+      createdatehistogram(site=currentsite(), detection_prob=currentprob1(), text_scale=scale_factor, wrap = width)
     })
     timehistogram({
       #num = window_width()/1440
       #scale_factor = abs(((1-(1/num))/6.3) - (1/num))
-      scale_factor = 1440/window_width()
-      createtimehistogram(site=currentsite(), detection_prob=currentprob1(), text_scale=scale_factor)
+      scale_factor = frozen_pixel_ratio()/2 #1440/window_width()
+      width = if (!is.null(window_width()) && !is.na(window_width())) window_width() else 1440
+      createtimehistogram(site=currentsite(), detection_prob=currentprob1(), text_scale=scale_factor, wrap = width)
     })
     shinyjs::delay(100, shinyjs::removeClass(selector = "body", class = "loading-cursor")) # back to normal cursor
     shinyjs::hide("showallhist") # histogram reset button hidden again
@@ -2065,10 +2228,11 @@ server = function(input, output) {
       df(filtersites(currentsite(), currentprob1()))
       birdbarplot({
         #diagonalpx = sqrt((window_width()**2)+(window_height()**2))
-        scale_factor = 1440/window_width() #diagonalpx/1686 # diagonal of MacBook Pro
+        scale_factor = frozen_pixel_ratio()/2 #diagonalpx/1686 # diagonal of MacBook Pro
         #num = window_width()/1440
         #scale_factor = abs(((1-(1/num))/6.3) - (1/num))
-        createbirdplot(currentsite(), currentprob1(), text_scale = scale_factor)
+        width = if (!is.null(window_width()) && !is.na(window_width())) window_width() else 1440
+        createbirdplot(currentsite(), currentprob1(), text_scale = scale_factor, wrap = width)
       })
       
       shinyjs::show("songbirds") # reveal bird icons
@@ -2124,14 +2288,16 @@ server = function(input, output) {
       datehistogram({
         #num = window_width()/1440
         #scale_factor = abs(((1-(1/num))/6.3) - (1/num))
-        scale_factor = 1440/window_width()
-        createdatehistogram(site=currentsite(), detection_prob=currentprob1(), text_scale=scale_factor)
+        scale_factor = frozen_pixel_ratio()/2 #1440/window_width()
+        width = if (!is.null(window_width()) && !is.na(window_width())) window_width() else 1440
+        createdatehistogram(site=currentsite(), detection_prob=currentprob1(), text_scale=scale_factor, wrap = width)
       })
       timehistogram({
         #num = window_width()/1440
         #scale_factor = abs(((1-(1/num))/6.3) - (1/num))
-        scale_factor = 1440/window_width()
-        createtimehistogram(site=currentsite(), detection_prob=currentprob1(), text_scale=scale_factor)
+        scale_factor = frozen_pixel_ratio()/2 #1440/window_width()
+        width = if (!is.null(window_width()) && !is.na(window_width())) window_width() else 1440
+        createtimehistogram(site=currentsite(), detection_prob=currentprob1(), text_scale=scale_factor, wrap = width)
       })
       shinyjs::delay(100, shinyjs::removeClass(selector = "body", class = "loading-cursor")) # back to normal cursor
       
@@ -2156,7 +2322,7 @@ server = function(input, output) {
     if (nrow(speciesdf()) == 0) {
       speciesmsg({
         val = if (currentspecies() %in% sgcnbirds_wsymbol | currentspecies() == "Eastern Screech-Owl²") {str_sub(currentspecies(), 1, -2)} else {currentspecies()}
-        percentsites = round((nrow(speciesdf())/121), 2)*100
+        percentsites = round((nrow(speciesdf())/124), 2)*100
         paste(br(), h6(HTML(glue("<strong>{val} detected at {percentsites}% of sites. Select lower minimum detection probability.</strong>"))))
       })
       speciesplot("")
@@ -2167,15 +2333,16 @@ server = function(input, output) {
     } else {
       speciesmsg({
         val = if (currentspecies() %in% sgcnbirds_wsymbol | currentspecies() == "Eastern Screech-Owl²") {str_sub(currentspecies(), 1, -2)} else {currentspecies()}
-        percentsites = round((nrow(speciesdf())/121), 2)*100
+        percentsites = round((nrow(speciesdf())/124), 2)*100
         if (percentsites == 101) {percentsites = 100} else {percentsites = percentsites}
         paste(br(), h6(HTML(glue("<strong>{val} detected at ~{percentsites}% of sites</strong>"))))
       })
       speciesplot({
         #num = window_width()/1440
         #scale_factor = abs(((1-(1/num))/6.3) - (1/num))
-        scale_factor = 1440/window_width()
-        createspeciesplot(currentspecies(), currentprob2(), text_scale = scale_factor)
+        scale_factor = frozen_pixel_ratio()/2 #1440/window_width()
+        width = if (!is.null(window_width()) && !is.na(window_width())) window_width() else 1440
+        createspeciesplot(currentspecies(), currentprob2(), text_scale = scale_factor, wrap = width)
       })
       displayed_species_at_sites({
         val = if (currentspecies() %in% sgcnbirds_wsymbol | currentspecies() == "Eastern
@@ -2229,7 +2396,7 @@ server = function(input, output) {
     if (nrow(speciesdf()) == 0) {
       speciesmsg({
         val = if (currentspecies() %in% sgcnbirds_wsymbol | currentspecies() == "Eastern Screech-Owl²") {str_sub(currentspecies(), 1, -2)} else {currentspecies()}
-        percentsites = round((nrow(speciesdf())/121), 2)*100
+        percentsites = round((nrow(speciesdf())/124), 2)*100
         paste(br(), h6(HTML(glue("<strong>{val} detected at {percentsites}% of sites. Select lower minimum detection probability.</strong>"))))
       })
       speciesplot("")
@@ -2240,15 +2407,16 @@ server = function(input, output) {
     } else {
       speciesmsg({
         val = if (currentspecies() %in% sgcnbirds_wsymbol | currentspecies() == "Eastern Screech-Owl²") {str_sub(currentspecies(), 1, -2)} else {currentspecies()}
-        percentsites = round((nrow(speciesdf())/121), 2)*100
+        percentsites = round((nrow(speciesdf())/124), 2)*100
         if (percentsites == 101) {percentsites = 100} else {percentsites = percentsites}
         paste(br(), h6(HTML(glue("<strong>{val} detected at ~{percentsites}% of sites</strong>"))))
       })
       speciesplot({
         #num = window_width()/1440
         #scale_factor = abs(((1-(1/num))/6.3) - (1/num))
-        scale_factor = 1440/window_width()
-        createspeciesplot(currentspecies(), currentprob2(), text_scale = scale_factor)
+        scale_factor = frozen_pixel_ratio()/2 #1440/window_width()
+        width = if (!is.null(window_width()) && !is.na(window_width())) window_width() else 1440
+        createspeciesplot(currentspecies(), currentprob2(), text_scale = scale_factor, wrap = width)
       })
       displayed_species_at_sites({
         val = if (currentspecies() %in% sgcnbirds_wsymbol | currentspecies() == "Eastern
@@ -2347,7 +2515,7 @@ server = function(input, output) {
   
   # tab 1
   #output$browser_dim <- renderText({
-  #paste0(window_width(), "x", shinybrowser::get_height())
+    #paste0(window_width(), "x", window_height(), "  pixel ratio: ", pixel_ratio())
   #})
   output$spacer1 = renderUI({HTML(paste(" ", br()))})
   output$siteselection = renderUI({
@@ -2358,41 +2526,41 @@ server = function(input, output) {
   output$site_statistics = renderUI({HTML(displayedstats())})
   output$sitemsg = renderUI({HTML(sitemsg())})
   output$birdfamily = renderPlot(req(birdbarplot()), 
-                                 res = 96, width = 840, height = 400)
+                                 res = 96)#, width = 850, height = 400)
   output$songbirds = renderImage({
     list(src = "www/songbirds.png",
          alt = "Songbirds icon",
          contentType = "image/png",
-         height = "100px",
-         align = "left")
+         #height = "100px",
+         align = "center")
   }, deleteFile = FALSE)
   output$waterfowl = renderImage({
     list(src = "www/waterfowl_and_wading_birds.png",
          alt = "Waterfowl and Wading Birds icon",
          contentType = "image/png",
-         height = "100px",
-         align = "left")
+         #height = "100px",
+         align = "center")
   }, deleteFile = FALSE)
   output$owls = renderImage({
     list(src = "www/owls_and_raptors.png",
          alt = "Owls and Raptors icon",
          contentType = "image/png",
-         height = "100px",
-         align = "left")
+         #height = "100px",
+         align = "center")
   }, deleteFile = FALSE)
   output$shorebirds = renderImage({
     list(src = "www/shorebirds.png",
          alt = "Shorebirds icon",
          contentType = "image/png",
-         height = "70px",
-         align = "left")
+         #height = "70px",
+         align = "center")
   }, deleteFile = FALSE)
   output$landbirds = renderImage({
     list(src = "www/other_land_birds.png",
          alt = "Other Land Birds icon",
          contentType = "image/png",
-         height = "100px",
-         align = "left")
+         #height = "100px",
+         align = "center")
   }, deleteFile = FALSE)
   output$songbirds_label = renderUI({HTML(
     HTML(paste0(h6("Songbirds")))
@@ -2401,13 +2569,13 @@ server = function(input, output) {
     HTML(paste0(h6(HTML(glue("Waterfowl and<br>Wading Birds")))))
   )})
   output$owls_label = renderUI({HTML(
-    HTML(paste0(h6("Owls and Other Raptors")))
+    HTML(paste0(h6(HTML(glue("Owls and<br>Other Raptors")))))
   )})
   output$shorebirds_label = renderUI({HTML(
     HTML(paste0(h6("Shorebirds")))
   )})
   output$landbirds_label = renderUI({HTML(
-    HTML(paste0(h6("Other Land Birds")))
+    HTML(paste0(h6(HTML(glue("Other<br>Land Birds")))))
   )})
   output$songbirds_text = renderUI({HTML(songbirds_text())})
   output$waterfowl_text = renderUI({HTML(waterfowl_text())})
@@ -2452,7 +2620,7 @@ server = function(input, output) {
     if (input$species == "") {HTML(paste(br(), h4("")))} else {HTML(speciesmsg())}
   })
   output$speciesplot = renderPlot(req(speciesplot()),
-                                  res = 96, width = 600, height = 400)
+                                  res = 96)#, width = 600, height = 400)
   output$species_at_sites = renderUI({HTML(displayed_species_at_sites())})
   output$speciestable = renderDT(req(datatable(req(speciesdf()), escape = FALSE,
                                                selection = "single",
@@ -2498,7 +2666,7 @@ server = function(input, output) {
   # overall
   output$footer = renderUI({
     HTML(paste(
-      h6("This research is made possible with support from the University of Minnesota and Minnesota's Environment and Natural Resources Trust Fund. Partners include the Minnesota Department of Natural Resources, the Minnesota Cooperative Fish and Wildlife Research Unit, Audubon Upper Mississippi River, and our citizen science volunteers and collaborators."), h6("App last updated on August 24th, 2026."), h6(HTML(glue("<em><strong>Contact us at:</strong></em> <u>soundsofnature@umn.edu</u>")))
+      h6("This research is made possible with support from the University of Minnesota and Minnesota's Environment and Natural Resources Trust Fund. Partners include the Minnesota Department of Natural Resources, the Minnesota Cooperative Fish and Wildlife Research Unit, Audubon Upper Mississippi River, and our citizen science volunteers and collaborators."), h6("App last updated on October 8th, 2026."), h6(HTML(glue("<em><strong>Contact us at:</strong></em> <u>soundsofnature@umn.edu</u>")))
     ))
   })
 }
