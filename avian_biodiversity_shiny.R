@@ -521,7 +521,8 @@ createbirdplot = function(site, detection_prob="60", text_scale = 1, wrap = 1440
                                          color = "#c5d1cd",
                                          fill = "#fffffa"),
           plot.margin = margin(t = 14, r = 40, b = 14, l = 14)
-    ) 
+    )
+
 }
 
 createdatehistogram = function(site, species="overall", detection_prob="60", text_scale = 1, wrap = 1440) {
@@ -1319,6 +1320,33 @@ createspeciesplot = function(species, detection_prob="60", text_scale = 1, wrap 
     )
 }
 
+barclick = function(click, numbars) {
+  if (is.null(click) || is.null(click$x) || is.null(click$domain)) {return(NA)}
+  
+  if (numbars == 2) {
+    left = click$domain$left
+    right = click$domain$right
+    if (is.null(left) || is.null(right) || right <= left) {return(NA)}
+  
+    frac = (click$x - left) / (right - left)   # normalizing click + plot panel to 0-1 values
+    idx = floor(frac * (numbars)) + 1   # x value (accounting for left/right default ggplot padding)
+    
+    if (is.na(idx) || idx < 1 || idx > numbars) {return(NA)}
+    
+    return(idx)
+  }
+  
+  if (numbars == 5) {
+    bar_centers = c(0.139, 0.323, 0.504, 0.684, 0.864)
+    idx = which.min(abs(bar_centers - click$x))
+    
+    if (is.na(idx) || idx < 1 || idx > numbars) {return(NA)}
+    
+    return(idx)
+  }
+
+}
+
 
 # Data table containers that allow for hovering in Shiny
 
@@ -1453,7 +1481,7 @@ ui = fluidPage(
                p(strong("Tab 2:", em("Search by Species"))),
                #p(tags$div(class = "sidebar_header", "Tab 2:<em>Search by Species</em>")),
                p(strong(em("Click")), "the selection menu at the top and type in or scroll to search by species. Use the selection menu to the right to filter species detections by minimum detection probability. The map will update to highlight the sites where your species was detected (detections will appear as blue pins). The bar plot will also update to show the broad biome type(s) where the selected species was detected. See the table below for species-specific data by site, and click on a bar (i.e., biome type) in the plot above to further filter the data table by biome. Hover over column names or scroll below the data table for column descriptions."),
-               width = 3,
+               width = 3
   ),
   mainPanel(
     tabsetPanel(
@@ -1993,20 +2021,24 @@ server = function(input, output, session) {
   
   # tab 1
   observeEvent(input$familyclick, {
-    #family_clicked = unique_families$Family[which.min(abs(as.numeric(factor(unique_families$Family)) - bar_clicked))]
-    
+    print(str(input$familyclick))
     # getting bar click coordinates to corresponds properly with avian groups regardless of plot size
-    bar_clicked = input$familyclick$x
+    bar_clicked = input$familyclick
     n = nrow(unique_families)
-    bar_index = round((bar_clicked - (1 / (2 * n))) / (1 / n)) + 1
+    bar_index = barclick(bar_clicked, n)
+    req(!is.na(bar_index))  # ignoring clicks that are outside the plot panel
     family_clicked = as.character(unique_families$Family[bar_index])
+    
+    #bar_index = round((bar_clicked - (1 / (2 * n))) / (1 / n)) + 1
+    #family_clicked = as.character(unique_families$Family[bar_index])
+    #family_clicked = unique_families$Family[which.min(abs(as.numeric(factor(unique_families$Family)) - bar_clicked))]
     
     df(filterfamily(currentsite(), family_clicked, currentprob1()))
     displayedfamily(
       paste(h4(paste0("Showing ", family_clicked, " at site ", currentsite(), ":")), br())
     )
     shinyjs::show("showallbirds") # reveal reset button
-  })
+  }, ignoreInit = TRUE)
   
   # when "show all" button clicked, table updated to show all birds at selected site (reset)
   
@@ -2462,12 +2494,16 @@ server = function(input, output, session) {
   # tab 2
   observeEvent(input$biomeclick, {
     #biome_clicked = unique_biomes$`Biome Type`[which.min(abs(as.numeric(factor(unique_biomes$`Biome Type`)) - bar_clicked))]
-    
     # getting bar click coordinates to corresponds properly with biomes regardless of plot size
-    bar_clicked = input$biomeclick$x
+    bar_clicked = input$biomeclick
     n = nrow(unique_biomes)
-    bar_index = round((bar_clicked - (1 / (2 * n))) / (1 / n)) + 1
+    bar_index = barclick(bar_clicked, n)
+    req(!is.na(bar_index))  # ignoring clicks that are outside the plot panel
     biome_clicked = as.character(unique_biomes$`Biome Type`[bar_index])
+    
+    #bar_index = round((bar_clicked - (1 / (2 * n))) / (1 / n)) + 1
+    #biome_clicked = as.character(unique_biomes$`Biome Type`[bar_index])
+    #biome_clicked = unique_biomes$`Biome Type`[which.min(abs(as.numeric(factor(unique_biomes$`Biome Type`)) - bar_clicked))]
     
     speciesdf(filterbiomes(currentspecies(), currentprob2(), biome_clicked))
     displayed_species_at_sites({
@@ -2525,8 +2561,8 @@ server = function(input, output, session) {
   output$site_stats_header = renderUI({HTML(displayedstatsheader())})
   output$site_statistics = renderUI({HTML(displayedstats())})
   output$sitemsg = renderUI({HTML(sitemsg())})
-  output$birdfamily = renderPlot(req(birdbarplot()), 
-                                 res = 96)#, width = 850, height = 400)
+  output$birdfamily = renderPlot(req(birdbarplot()),
+                                           res = 96)#, width = 850, height = 400)
   output$songbirds = renderImage({
     list(src = "www/songbirds.png",
          alt = "Songbirds icon",
