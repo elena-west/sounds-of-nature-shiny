@@ -24,6 +24,7 @@ library(htmlwidgets)
 library(favawesome)
 library(hms)
 library(ggh4x)
+library(shinyfullscreen)
 
 font_add_google("Libre Franklin", "libre")
 showtext_auto()
@@ -85,7 +86,9 @@ private_dpd = read_csv("birdnet_avg_detections_per_day_private.csv")
 public_dpd = read_csv("birdnet_avg_detections_per_day_public.csv")
 avg_dpd_df = bind_rows(private_dpd, public_dpd)
 
-#### Creating Icons for Map and Mapping Site Location Data (Default Map First Displayed on Tab 1)
+#### Creating Icons for Map and Mapping Site Location Data (Default Maps on Tabs 1/2)
+
+### Base Map on Tab 2
 
 geogss = geogs %>% mutate(
   Marker_color = case_when(
@@ -105,7 +108,7 @@ map_icon = makeAwesomeIcon(
   iconColor = "#264037"
 )
 
-globalmap = leaflet(options = leafletOptions(zoomSnap = 0.25,
+globalspeciesmap = leaflet(options = leafletOptions(zoomSnap = 0.25,
                                              zoomControl = FALSE)) %>% 
   setView(lng = -94, lat = 45, zoom = 6.75) %>% 
   addTiles() %>% 
@@ -119,17 +122,23 @@ globalmap = leaflet(options = leafletOptions(zoomSnap = 0.25,
   addControl(html = "<strong>Biome Type</strong> <br> <i class='fa fa-tree'></i> Forest <br> <i class='fa fa-leaf'></i> Grassland",
              position = "bottomright") %>% 
   addLegend(
-    position = "bottomright",  # Position the legend
+    position = "bottomright",
     colors = c("#70ac26", "#bbfa71"),
     labels = c("Private", "Public"),
-    title = "Type of Site", # Set a title
-    opacity = 1
+    title = "Type of Site", 
+    opacity = 1,
+    layerId = "sitelegend"
   ) %>% 
   onRender(
     "function(el, x) {
           L.control.zoom({position:'topright'}).addTo(this);
         }") %>% 
-  addResetMapButton() %>% 
+  addResetMapButton() %>%
+  addFullscreenControl(position = "topright", pseudoFullscreen = FALSE)
+
+### Base Map on Tab 1
+
+globalsitemap = globalspeciesmap %>%
   addSearchFeatures(targetGroups = "sites", options = searchFeaturesOptions(
     moveToLocation = TRUE,
     zoom = 10,
@@ -391,73 +400,76 @@ site_biome = function(site) {
   return(val)
 }
 
-makesitemap = function(site) {
+
+# updates existing global map's markers/legend/view w/o re-rendering the map object
+update_site_map = function(site = NULL) {
   
-  # use existing geogs df to create new temp df where new col shows pin marker color depending on if site is what user has selected and if it is public or private
+  if (is.null(site)) {
+    geogs_sites = geogs %>% 
+      mutate(Marker_color = case_when(
+        `Public or Private` == "Public" ~ "lightgreen",
+        TRUE ~ "green"
+      ),
+      Icon_type = case_when(
+        `Biome Type` == "Forest" ~ "tree",
+        TRUE ~ "leaf"
+      ))
+  }
   
-  geogs_sites = geogs %>% 
-    mutate(Marker_color = case_when(
-      ARU == site ~ "blue",  # User's selected site
-      `Public or Private` == "Public" ~ "lightgreen",  # If public and not user's selected site
-      TRUE ~ "green"  # If private and not user's selected site
-    ),
-    Icon_type = case_when(
-      `Biome Type` == "Forest" ~ "tree",
-      TRUE ~ "leaf" # If grassland
-    ))
+  else {
+    geogs_sites = geogs %>% 
+      mutate(Marker_color = case_when(
+        ARU == site ~ "blue",
+        `Public or Private` == "Public" ~ "lightgreen",
+        TRUE ~ "green"
+      ),
+      Icon_type = case_when(
+        `Biome Type` == "Forest" ~ "tree",
+        TRUE ~ "leaf"
+      ))
+  }
   
-  tlat = geogs_sites %>% 
-    filter(ARU == site) %>% 
-    pull(`Township Lat`)
-  
-  tlong = geogs_sites %>% 
-    filter(ARU == site) %>% 
-    pull(`Township Long`)
-  
-  map_icon = makeAwesomeIcon(
+  site_icons = makeAwesomeIcon(
     icon = geogs_sites$Icon_type,
     library = "fa",
     markerColor = geogs_sites$Marker_color,
     iconColor = "#264037"
   )
   
-  map = leaflet(options = leafletOptions(zoomSnap = 0.25,
-                                         zoomControl = FALSE)) %>% 
-    setView(lng = tlong, lat = tlat, zoom = 14) %>% 
-    addTiles() %>% 
-    addProviderTiles("OpenStreetMap.HOT") %>%  
-    addAwesomeMarkers(lng = geogs_sites$`Township Long`, 
-                      lat = geogs_sites$`Township Lat`, 
-                      icon = map_icon,
+  proxy = leafletProxy("map") %>%  # shiny inputID of map object to update
+    clearMarkers() %>% 
+    addAwesomeMarkers(lng = geogs_sites$`Township Long`,
+                      lat = geogs_sites$`Township Lat`,
+                      icon = site_icons,
                       label = glue("Site {geogs_sites$ARU}"),
                       layerId = geogs_sites$ARU,
-                      group = "sites") %>%
-    addControl(html = "<strong>Biome Type</strong> <br> <i class='fa fa-tree'></i> Forest <br> <i class='fa fa-leaf'></i> Grassland",
-               position = "bottomright") %>% 
-    addLegend(
-      position = "bottomright",  # Position the legend
-      colors = c("#70ac26", "#bbfa71", "#2596be"),
-      labels = c("Private", "Public", "Selected"),
-      title = "Type of Site", # Set a title
-      opacity = 1
-    ) %>%
-    onRender(
-      "function(el, x) {
-          L.control.zoom({position:'topright'}).addTo(this);
-        }") %>%
-    addResetMapButton() %>% 
-    addSearchFeatures(targetGroups = "sites", options = searchFeaturesOptions(
-      moveToLocation = FALSE,
-      zoom = 14,
-      autoCollapse = TRUE,
-      hideMarkerOnCollapse = FALSE,
-      textPlaceholder = "Search by Site Number...",
-      marker = list(icon = NULL, animate = TRUE, circle = list(radius = 10, weight = 3, color
-                                                               = "#fe6100", stroke = TRUE, fill = FALSE))
-    ))
+                      group = "sites")
   
-  return(map)
+  if (is.null(site)) {
+    proxy %>% 
+      setView(lng = -94, lat = 45, zoom = 6.75) %>% 
+      addLegend(position = "bottomright",
+                colors = c("#70ac26", "#bbfa71"),
+                labels = c("Private", "Public"),
+                title = "Type of Site",
+                opacity = 1,
+                layerId = "sitelegend")
+  } 
+  
+  else {
+    tlat = geogs_sites %>% filter(ARU == site) %>% pull(`Township Lat`)
+    tlong = geogs_sites %>% filter(ARU == site) %>% pull(`Township Long`)
+    proxy %>% 
+      setView(lng = tlong, lat = tlat, zoom = 14) %>% 
+      addLegend(position = "bottomright",
+                colors = c("#70ac26", "#bbfa71", "#2596be"),
+                labels = c("Private", "Public", "Selected"),
+                title = "Type of Site",
+                opacity = 1,
+                layerId = "sitelegend")
+  }
 }
+
 
 createbirdplot = function(site, detection_prob="60", text_scale = 1, wrap = 1440) {
   filtered_df = filtersites(site, detection_prob) %>% 
@@ -479,10 +491,10 @@ createbirdplot = function(site, detection_prob="60", text_scale = 1, wrap = 1440
               fontface = "bold",
               size = 18/.pt * text_scale,
               vjust = -0.5) +
-    scale_x_discrete(labels = label_wrap(11), drop = FALSE) +
+    scale_x_discrete(labels = label_wrap(x_label), drop = FALSE) +
     scale_y_continuous(limits = c(0, maxn), breaks = seq(0, maxn, by = 10)) +
     scale_fill_manual(values = c("Songbirds" = "#ffb000", "Waterfowl & Wading Birds" = "#fe6100", "Owls & Other Raptors" = "#dc267f", "Shorebirds" = "#785ef0", "Other Land Birds" = "#648fff")) +
-    labs(x = "Avian Group", y = "Species Detected",
+    labs(x = "\nAvian Group", y = "Species Detected",
          title = str_wrap(plottitle, title_wrap),
          subtitle = str_wrap("Click on a bar to explore the corresponding species in the data table!", subtitle_wrap)) +
     theme(legend.position = "none",
@@ -525,11 +537,18 @@ createbirdplot = function(site, detection_prob="60", text_scale = 1, wrap = 1440
 
 }
 
-createdatehistogram = function(site, species="overall", detection_prob="60", text_scale = 1, wrap = 1440) {
+createdatehistogram = function(site, species="overall", text_scale = 1, wrap = 1440) {
+  
+  # prob always 60 (aka showing all data) bc unable to show histogram breakdowns for each detection
+  #   probability range. data brought into R/Shiny is organized in a way where datetime info is 
+  #   summarized by site and species. Modifying histograms to show specific detection probability
+  #   range is not possible unless we bring in more specific data (aka 8+ million rows of original
+  #   species detection data where datetime info is specific to each detection), which requires 
+  #   greater computational power and memory.
+  
   if (species == "overall") {
     df = cleaningsites %>% 
-      filter(`Site Number` == site,
-             as.numeric(substr(`Highest Confidence`, 1, 2)) >= as.numeric(detection_prob))
+      filter(`Site Number` == site)
     
     overalldatelist = list()
     overallcountlist = list()
@@ -564,7 +583,7 @@ createdatehistogram = function(site, species="overall", detection_prob="60", tex
     
     plottitle = paste0("Bird Detections at Site ", site, " by Date")
     adjusted_lineheight = 0.55 / text_scale
-    title_wrap = if (wrap < 601) {27} else {50}
+    title_wrap = if (wrap < 601) {27} else {70}
     subtitle_wrap = if (wrap < 601) {33} else {70}
     
     maxn = max(tempdf$Count) + 20
@@ -584,7 +603,7 @@ createdatehistogram = function(site, species="overall", detection_prob="60", tex
       scale_x_date(date_breaks = "4 days") +
       scale_y_continuous(labels = scales::comma_format(), 
                          limits = c(0, maxn), n.breaks = 7) + #breaks = seq(0, maxn, by = 200)) +
-      labs(x = "Dates", y = "Number of Detections",
+      labs(x = "\nDates", y = "Number of Detections",
            subtitle = str_wrap("60% detection probability or higher; each bar represents 1 day", subtitle_wrap),
            title = str_wrap(plottitle, title_wrap)) +
       #theme_bw(base_size = 18) +
@@ -625,8 +644,7 @@ createdatehistogram = function(site, species="overall", detection_prob="60", tex
   else {
     df = cleaningsites %>% 
       filter(`Site Number` == site,
-             `Common Name` == species,
-             as.numeric(substr(`Highest Confidence`, 1, 2)) >= as.numeric(detection_prob))
+             `Common Name` == species)
     
     dtlistchar = str_sub(df %>% pull(`List of Datetimes`), 3, -3)
     dtcharlist = (str_split(dtlistchar, "\\], \\["))[[1]]
@@ -654,7 +672,7 @@ createdatehistogram = function(site, species="overall", detection_prob="60", tex
     val = if (species %in% sgcnbirds_wsymbol | species == "Eastern Screech-Owl²") {str_sub(species, 1, -2)} else {species}
     plottitle = paste0(val, " Detections at Site ", site, " by Date")
     adjusted_lineheight = 0.55 / text_scale
-    title_wrap = if (wrap < 601) {27} else {50}
+    title_wrap = if (wrap < 601) {27} else {70}
     subtitle_wrap = if (wrap < 601) {33} else {70}
     
     maxn = max(tempdf$Count) + 2
@@ -673,10 +691,10 @@ createdatehistogram = function(site, species="overall", detection_prob="60", tex
         #fontface = "bold",
         #size = 18/.pt, #* text_scale,
         #vjust = -0.5) +
-        scale_x_date(date_breaks = "1 day") +
+        scale_x_date(date_breaks = "4 days") +
         scale_y_continuous(labels = scales::comma_format(),
                            limits = c(0, maxn), breaks = seq(0, maxn, 1)) +
-        labs(x = "Dates", y = "Number of Detections",
+        labs(x = "\nDates", y = "Number of Detections",
              subtitle = str_wrap("60% detection probability or higher; each bar represents 1 day", subtitle_wrap),
              title = str_wrap(plottitle, title_wrap)) +
         #theme_bw(base_size = 18) +
@@ -732,7 +750,7 @@ createdatehistogram = function(site, species="overall", detection_prob="60", tex
         scale_x_date(date_breaks = "4 days") +
         scale_y_continuous(labels = scales::comma_format(),
                            limits = c(0, maxn), n.breaks = 7) +
-        labs(x = "Dates", y = "Number of Detections",
+        labs(x = "\nDates", y = "Number of Detections",
              subtitle = str_wrap("60% detection probability or higher; each bar represents 1 day", subtitle_wrap),
              title = str_wrap(plottitle, title_wrap)) +
         #theme_bw(base_size = 17) +
@@ -774,11 +792,18 @@ createdatehistogram = function(site, species="overall", detection_prob="60", tex
   }
 }
 
-createtimehistogram = function(site, species="overall", detection_prob="60", text_scale = 1, wrap = 1440) {
+createtimehistogram = function(site, species="overall", text_scale = 1, wrap = 1440) {
+  
+  # prob always 60 (aka showing all data) bc unable to show histogram breakdowns for each detection
+  #   probability range. data brought into R/Shiny is organized in a way where datetime info is 
+  #   summarized by site and species. Modifying histograms to show specific detection probability
+  #   range is not possible unless we bring in more specific data (aka 8+ million rows of original
+  #   species detection data where datetime info is specific to each detection), which requires 
+  #   greater computational power and memory.
+  
   if (species == "overall") {
     df = cleaningsites %>% 
-      filter(`Site Number` == site,
-             as.numeric(substr(`Highest Confidence`, 1, 2)) >= as.numeric(detection_prob))
+      filter(`Site Number` == site)
     
     overalltimelist = list()
     overallcountlist = list()
@@ -825,7 +850,7 @@ createtimehistogram = function(site, species="overall", detection_prob="60", tex
     plottitle = paste0("Bird Detections at Site ", site, " by Time of Day")
     subtt = "60% detection probability or higher; each bar represents a 1-hour time interval"
     adjusted_lineheight = 0.55 / text_scale
-    title_wrap = if (wrap < 601) {27} else {50}
+    title_wrap = if (wrap < 601) {27} else {70}
     subtitle_wrap = if (wrap < 978 && wrap >= 601) {59} else if (wrap < 601) {33} else {85}
     
     maxn = max(tempdf$Count) + 20
@@ -850,7 +875,7 @@ createtimehistogram = function(site, species="overall", detection_prob="60", tex
         )
       ) +
       scale_y_continuous(labels = scales::comma_format(), n.breaks = 7) +
-      labs(x = "Time of Day", y = "Number of Detections",
+      labs(x = "\nTime of Day", y = "Number of Detections",
            title = str_wrap(plottitle, title_wrap),
            subtitle = str_wrap(subtt, subtitle_wrap)) +
       #theme_bw(base_size = 17) +
@@ -895,8 +920,7 @@ createtimehistogram = function(site, species="overall", detection_prob="60", tex
   else {
     df = cleaningsites %>% 
       filter(`Site Number` == site,
-             `Common Name` == species,
-             as.numeric(substr(`Highest Confidence`, 1, 2)) >= as.numeric(detection_prob))
+             `Common Name` == species)
     
     dtlistchar = str_sub(df %>% pull(`List of Datetimes`), 3, -3)
     dtcharlist = (str_split(dtlistchar, "\\], \\["))[[1]]
@@ -936,7 +960,7 @@ createtimehistogram = function(site, species="overall", detection_prob="60", tex
     plottitle = paste0(val, " Detections at Site ", site, " by Time of Day")
     subtt = "60% detection probability or higher; each bar represents a 1-hour time interval"
     adjusted_lineheight = 0.55 / text_scale
-    title_wrap = if (wrap < 601) {27} else {50}
+    title_wrap = if (wrap < 601) {27} else {70}
     subtitle_wrap = if (wrap < 978) {59} else if (wrap < 601) {33} else {85}
     
     maxn = max(tempdf$Count) + 2
@@ -963,7 +987,7 @@ createtimehistogram = function(site, species="overall", detection_prob="60", tex
           )
         ) +
         scale_y_continuous(labels = scales::comma_format()) +
-        labs(x = "Time of Day", y = "Number of Detections",
+        labs(x = "\nTime of Day", y = "Number of Detections",
              title = str_wrap(plottitle, title_wrap),
              subtitle = str_wrap(subtt, subtitle_wrap)) +
         #theme_bw(base_size = 17) +
@@ -1027,7 +1051,7 @@ createtimehistogram = function(site, species="overall", detection_prob="60", tex
           )
         ) +
         scale_y_continuous(labels = scales::comma_format(), n.breaks = 5) +
-        labs(x = "Time of Day", y = "Number of Detections",
+        labs(x = "\nTime of Day", y = "Number of Detections",
              title = str_wrap(plottitle, title_wrap),
              subtitle = str_wrap(subtt, subtitle_wrap)) +
         #theme_bw(base_size = 17) +
@@ -1072,7 +1096,9 @@ createtimehistogram = function(site, species="overall", detection_prob="60", tex
   }
 }
 
-makespeciesmap = function(species, detection_prob="60") {
+
+# updates existing global map's markers/legend/view w/o re-rendering the map object
+update_species_map = function(species, detection_prob="60", sitetype="All sites") {
   
   # find which sites have detections of this species
   
@@ -1081,7 +1107,7 @@ makespeciesmap = function(species, detection_prob="60") {
            as.numeric(substr(`Highest Confidence`, 1, 2)) >= as.numeric(detection_prob)) %>% 
     pull(`Site Number`)
   
-  # use existing geogs df to create new temp df where new cols show if site has species detection or not, and if so, icon color set to white
+  # use existing geogs df to create new temp df where new cols show if site has species detection or not, and if so, marker color set to blue
   
   geogs_with_species = geogs %>% 
     mutate(Species_present = case_when(
@@ -1098,6 +1124,11 @@ makespeciesmap = function(species, detection_prob="60") {
       TRUE ~ "leaf" # If grassland
     ))
   
+  if (sitetype=="Only sites with species") {
+    geogs_with_species = geogs_with_species %>%
+      filter(Species_present=="Yes")
+  }
+  
   # creating dynamic icons and map based on presence/absence of species at sites
   
   species_map_icon = makeAwesomeIcon(
@@ -1107,33 +1138,35 @@ makespeciesmap = function(species, detection_prob="60") {
     iconColor = "#264037"
   )
   
-  speciesmap = leaflet(options = leafletOptions(zoomSnap = 0.25,
-                                                zoomControl = FALSE)) %>% 
-    setView(lng = -94, lat = 45, zoom = 6.75) %>% 
-    addTiles() %>% 
-    addProviderTiles("OpenStreetMap.HOT") %>%  
+  proxy = leafletProxy("speciesmap") %>%  # shiny inputID of map object to update
+    clearMarkers() %>% 
     addAwesomeMarkers(lng = geogs_with_species$`Township Long`, 
                       lat = geogs_with_species$`Township Lat`, 
                       icon = species_map_icon,
                       label = glue("Site {geogs_with_species$ARU}"),
                       layerId = geogs_with_species$ARU,
-                      group = "sites") %>%
-    addControl(html = "<strong>Biome Type</strong> <br> <i class='fa fa-tree'></i> Forest <br> <i class='fa fa-leaf'></i> Grassland",
-               position = "bottomright") %>% 
-    addLegend(
-      position = "bottomright",  # Position the legend
-      colors = c("#70ac26", "#bbfa71", "#2596be"),
-      labels = c("Private", "Public", "Sites with Species"),
-      title = "Type of Site", # Set a title
-      opacity = 1
-    ) %>%
-    onRender(
-      "function(el, x) {
-          L.control.zoom({position:'topright'}).addTo(this);
-        }") %>%
-    addResetMapButton()
+                      group = "sites")
   
-  return(speciesmap)
+  if (sitetype=="Only sites with species") {
+    proxy %>% 
+      addLegend(
+        position = "bottomright",
+        colors = c("#2596be"),
+        labels = c("Sites with Species"),
+        title = "Type of Site",
+        opacity = 1,
+        layerId = "sitelegend")
+  } 
+  
+  else {
+    proxy %>% 
+      addLegend(position = "bottomright",
+                colors = c("#70ac26", "#bbfa71", "#2596be"),
+                labels = c("Private", "Public", "Sites with Species"),
+                title = "Type of Site",
+                opacity = 1,
+                layerId = "sitelegend")
+  }
 }
 
 filterspecies = function(species, detection_prob="60") {
@@ -1275,7 +1308,7 @@ createspeciesplot = function(species, detection_prob="60", text_scale = 1, wrap 
               fontface = "bold",
               size = 18/.pt * text_scale,
               vjust = -0.5) +
-    labs(x = "Biome Type", y = "Number of Sites",
+    labs(x = "\nBiome Type", y = "Number of Sites",
          title = str_wrap(plottitle, title_wrap)
     ) +
     scale_x_discrete(labels = label_wrap(15), drop = FALSE) +
@@ -1429,6 +1462,7 @@ ui = fluidPage(
   // layout reflows (e.g. content show/hide) rather than real
   // user-driven resizing, so we ignore tiny deltas.
   window.addEventListener('resize', function() {
+    if (document.fullscreenElement || document.webkitFullscreenElement) return;
     if (Math.abs(window.innerWidth - lastWidth) > 10) {
       lastWidth = window.innerWidth;
       scheduleReload(600);
@@ -1480,7 +1514,8 @@ ui = fluidPage(
                br(),
                p(strong("Tab 2:", em("Search by Species"))),
                #p(tags$div(class = "sidebar_header", "Tab 2:<em>Search by Species</em>")),
-               p(strong(em("Click")), "the selection menu at the top and type in or scroll to search by species. Use the selection menu to the right to filter species detections by minimum detection probability. The map will update to highlight the sites where your species was detected (detections will appear as blue pins). The bar plot will also update to show the broad biome type(s) where the selected species was detected. See the table below for species-specific data by site, and click on a bar (i.e., biome type) in the plot above to further filter the data table by biome. Hover over column names or scroll below the data table for column descriptions."),
+               p(strong(em("Click")), "the selection menu at the top and type in or scroll to search by species. Use the selection menu to the right to filter species detections by minimum detection probability, and use the buttons on the far right to modify which pins are displayed on the map. The map will update to highlight the sites where your species was detected (detections will appear as blue pins)."),
+               p(strong(em("Below")), "the map is a bar plot that will also update to show the broad biome type(s) where the selected species was detected. See the table under it for species-specific data by site, and click on a bar (i.e., biome type) in the plot above to further filter the data table by biome. Hover over column names or scroll below the data table for column descriptions. Lastly, click on a site in the data table and scroll below to see species-specific detections over time at that site."),
                width = 3
   ),
   mainPanel(
@@ -1594,12 +1629,13 @@ ui = fluidPage(
         title = "Search by Species",
         htmlOutput("spacer2"),
         fluidRow(
-          column(1),
-          column(5, selectInput("species", "Select a Species", 
+          column(4, selectInput("species", "Select a Species", 
                                 choices = c("", unique_species$`Common Name`), multiple = FALSE)),
-          column(6, selectInput("detectionprob2", "Minimum Detection Probability",
+          column(5, selectInput("detectionprob2", "Minimum Detection Probability",
                                 choices = c("60%", "70%", "80%", "90%"), multiple = FALSE,
-                                selected = "60%"))
+                                selected = "60%")),
+          column(3, radioButtons("sitedisplay", "Sites to Display",
+                                choices = c("All sites", "Only sites with species")))
         ),
         fluidRow(
           column(2),
@@ -1640,7 +1676,13 @@ ui = fluidPage(
           column(5, hidden(actionButton(inputId = "tabledescriptions2", label = "Show/Hide Column Descriptions")))
         ),
         br(),
-        hidden(htmlOutput("columninfo2"))
+        hidden(htmlOutput("columninfo2")),
+        br(),
+        hidden(htmlOutput("hist_header2")),
+        br(),
+        hidden(plotOutput("datehistogram2")),
+        br(),
+        hidden(plotOutput("timehistogram2")),
       ),
       tabPanel(
         title = "About",
@@ -1650,12 +1692,8 @@ ui = fluidPage(
         ),
         br(),
         htmlOutput("go_to_github"),
-        fluidRow(
-          column(3),
-          column(6, actionButton(inputId = "github", label = "Sounds of Nature MN GitHub Repository", 
-                                 onclick = paste0("window.open('https://github.com/elena-west/sounds-of-nature-shiny', '_blank')"))),
-          column(3)
-        )
+        actionButton(inputId = "github", label = "Sounds of Nature MN GitHub Repository", 
+                                 onclick = paste0("window.open('https://github.com/elena-west/sounds-of-nature-shiny', '_blank')")),
       )
     ),
     br(),
@@ -1701,7 +1739,6 @@ server = function(input, output, session) {
   # tab 1
   currentsite = reactiveVal("")
   displayedsite = reactiveVal("")
-  map = reactiveVal(globalmap) # default value is default map created earlier
   displayedstatsheader = reactiveVal("")
   displayedstats = reactiveVal("")
   sitemsg = reactiveVal("")
@@ -1733,11 +1770,14 @@ server = function(input, output, session) {
   # tab 2
   currentspecies = reactiveVal("")
   currentprob2 = reactiveVal("60")
+  mapdisplaytype = reactiveVal("")
   speciesmsg = reactiveVal("")
-  speciesmap = reactiveVal("")
   speciesplot = reactiveVal("")
   displayed_species_at_sites = reactiveVal("")
   speciesdf = reactiveVal("")
+  hist_header2 = reactiveVal("")
+  datehistogram2 = reactiveVal("")
+  timehistogram2 = reactiveVal("")
   columninfoheader2 = reactiveVal("")
   columninfo2state = reactiveVal("shown")
   columninfo2 = reactiveVal("")
@@ -1767,7 +1807,7 @@ server = function(input, output, session) {
     
     currentsite(site)
     
-    map(makesitemap(currentsite()))
+    update_site_map(currentsite())
     
     displayedsite(
       paste(h4(paste0("You are now exploring birds at site ", currentsite(), ":")))
@@ -1873,14 +1913,12 @@ server = function(input, output, session) {
     datehistogram({
       scale_factor = frozen_pixel_ratio()/2
       width = if (!is.null(window_width()) && !is.na(window_width())) window_width() else 1440
-      createdatehistogram(site=currentsite(), detection_prob=currentprob1(), 
-                          text_scale=scale_factor, wrap = width)
+      createdatehistogram(site=currentsite(), text_scale=scale_factor, wrap = width)
     })
     timehistogram({
       scale_factor = frozen_pixel_ratio()/2
       width = if (!is.null(window_width()) && !is.na(window_width())) window_width() else 1440
-      createtimehistogram(site=currentsite(), detection_prob=currentprob1(), text_scale=scale_factor, 
-                          wrap = width)
+      createtimehistogram(site=currentsite(), text_scale=scale_factor, wrap = width)
     })
     shinyjs::delay(100, shinyjs::removeClass(selector = "body", class = "loading-cursor")) # back to normal cursor
     
@@ -1899,6 +1937,7 @@ server = function(input, output, session) {
   
   observe({
     req(window_width())  # wait until shinybrowser sends back window width
+    req(input$map_bounds)   # wait until map has initialized
     req(!restored())
     
     query = parseQueryString(session$clientData$url_search)
@@ -1920,7 +1959,7 @@ server = function(input, output, session) {
     
     restored(TRUE)  
     
-  }) |> bindEvent(session$clientData$url_search, window_width(), once = FALSE)
+  }) |> bindEvent(session$clientData$url_search, window_width(), input$map_bounds, once = FALSE)
   
   
   observe({
@@ -1961,10 +2000,7 @@ server = function(input, output, session) {
   
   # tab 1
   observeEvent(input$zoomtomn, {
-    map(
-      map() %>% 
-        setView(lng = -94, lat = 45, zoom = 6.75)
-    )
+    leafletProxy("map") %>% setView(lng = -94, lat = 45, zoom = 6.75)
     shinyjs::hide("zoomtomn") # zoom to MN button hidden
   })
   
@@ -1972,7 +2008,7 @@ server = function(input, output, session) {
   
   # tab 1
   observeEvent(input$resetmap, {
-    map(globalmap)
+    update_site_map(NULL)
     displayedsite(paste(h4("Select your Site Below:")))
     displayedstatsheader("")
     displayedstats("")
@@ -2174,14 +2210,14 @@ server = function(input, output, session) {
       #scale_factor = abs(((1-(1/num))/6.3) - (1/num))
       scale_factor = frozen_pixel_ratio()/2 #1440/window_width()
       width = if (!is.null(window_width()) && !is.na(window_width())) window_width() else 1440
-      createdatehistogram(currentsite(), species, currentprob1(), scale_factor, wrap = width)
+      createdatehistogram(site=currentsite(), species=species, text_scale=scale_factor, wrap=width)
     })
     timehistogram({
       #num = window_width()/1440
       #scale_factor = abs(((1-(1/num))/6.3) - (1/num))
       scale_factor = frozen_pixel_ratio()/2 #1440/window_width()
       width = if (!is.null(window_width()) && !is.na(window_width())) window_width() else 1440
-      createtimehistogram(currentsite(), species, currentprob1(), scale_factor, wrap = width)
+      createtimehistogram(site=currentsite(), species=species, text_scale=scale_factor, wrap=width)
     })
     shinyjs::show("showallhist") # show histogram reset button
   })
@@ -2196,14 +2232,14 @@ server = function(input, output, session) {
       #scale_factor = abs(((1-(1/num))/6.3) - (1/num))
       scale_factor = frozen_pixel_ratio()/2 #1440/window_width()
       width = if (!is.null(window_width()) && !is.na(window_width())) window_width() else 1440
-      createdatehistogram(site=currentsite(), detection_prob=currentprob1(), text_scale=scale_factor, wrap = width)
+      createdatehistogram(site=currentsite(), text_scale=scale_factor, wrap = width)
     })
     timehistogram({
       #num = window_width()/1440
       #scale_factor = abs(((1-(1/num))/6.3) - (1/num))
       scale_factor = frozen_pixel_ratio()/2 #1440/window_width()
       width = if (!is.null(window_width()) && !is.na(window_width())) window_width() else 1440
-      createtimehistogram(site=currentsite(), detection_prob=currentprob1(), text_scale=scale_factor, wrap = width)
+      createtimehistogram(site=currentsite(), text_scale=scale_factor, wrap = width)
     })
     shinyjs::delay(100, shinyjs::removeClass(selector = "body", class = "loading-cursor")) # back to normal cursor
     shinyjs::hide("showallhist") # histogram reset button hidden again
@@ -2322,14 +2358,14 @@ server = function(input, output, session) {
         #scale_factor = abs(((1-(1/num))/6.3) - (1/num))
         scale_factor = frozen_pixel_ratio()/2 #1440/window_width()
         width = if (!is.null(window_width()) && !is.na(window_width())) window_width() else 1440
-        createdatehistogram(site=currentsite(), detection_prob=currentprob1(), text_scale=scale_factor, wrap = width)
+        createdatehistogram(site=currentsite(), text_scale=scale_factor, wrap = width)
       })
       timehistogram({
         #num = window_width()/1440
         #scale_factor = abs(((1-(1/num))/6.3) - (1/num))
         scale_factor = frozen_pixel_ratio()/2 #1440/window_width()
         width = if (!is.null(window_width()) && !is.na(window_width())) window_width() else 1440
-        createtimehistogram(site=currentsite(), detection_prob=currentprob1(), text_scale=scale_factor, wrap = width)
+        createtimehistogram(site=currentsite(), text_scale=scale_factor, wrap = width)
       })
       shinyjs::delay(100, shinyjs::removeClass(selector = "body", class = "loading-cursor")) # back to normal cursor
       
@@ -2349,7 +2385,6 @@ server = function(input, output, session) {
   observeEvent(input$species != "", {
     req(input$species) # ensures that if selectinput backspaced, code won't execute and app won't crash
     currentspecies(input$species)
-    speciesmap(makespeciesmap(currentspecies(), currentprob2()))
     speciesdf(filterspecies(currentspecies(), currentprob2()))
     if (nrow(speciesdf()) == 0) {
       speciesmsg({
@@ -2360,9 +2395,15 @@ server = function(input, output, session) {
       speciesplot("")
       displayed_species_at_sites("")
       speciesdf("")
+      shinyjs::hide("hist_header2") # hide histogram header
+      shinyjs::hide("datehistogram2") # hide histograms
+      shinyjs::hide("timehistogram2") # hide histograms
       shinyjs::hide("columninfoheader2") # hide column info header
+      shinyjs::hide("tabledescriptions2") # hide table descriptions button
       shinyjs::hide("columninfo2") # hide column info
     } else {
+      mapdisplaytype(input$sitedisplay)
+      update_species_map(currentspecies(), currentprob2(), mapdisplaytype())
       speciesmsg({
         val = if (currentspecies() %in% sgcnbirds_wsymbol | currentspecies() == "Eastern Screech-Owl²") {str_sub(currentspecies(), 1, -2)} else {currentspecies()}
         percentsites = round((nrow(speciesdf())/124), 2)*100
@@ -2410,7 +2451,11 @@ server = function(input, output, session) {
       
       #shinyjs::show("download_button2") # show download button
       shinyjs::hide("showallbiomes") # biomes reset button hidden
+      shinyjs::hide("hist_header2") # keep histogram header hidden
+      shinyjs::hide("datehistogram2") # keep histograms hidden
+      shinyjs::hide("timehistogram2") # keep histograms hidden
       shinyjs::show("columninfoheader2") # show column info header
+      shinyjs::show("tabledescriptions2") # show table descriptions button
       shinyjs::show("columninfo2") # show column info by default
     }
   })
@@ -2423,7 +2468,6 @@ server = function(input, output, session) {
     req(input$detectionprob2) # ensures that if detectionprob selectinput backspaced, code won't execute and app won't crash
     
     currentprob2(substr(input$detectionprob2, 1, 2))
-    speciesmap(makespeciesmap(currentspecies(), currentprob2()))
     speciesdf(filterspecies(currentspecies(), currentprob2()))
     if (nrow(speciesdf()) == 0) {
       speciesmsg({
@@ -2434,9 +2478,15 @@ server = function(input, output, session) {
       speciesplot("")
       displayed_species_at_sites("")
       speciesdf("")
+      shinyjs::hide("hist_header2") # hide histogram header
+      shinyjs::hide("datehistogram2") # hide histograms
+      shinyjs::hide("timehistogram2") # hide histograms
       shinyjs::hide("columninfoheader2") # hide column info header
+      shinyjs::hide("tabledescriptions2") # hide table descriptions button
       shinyjs::hide("columninfo2") # hide column info
     } else {
+      mapdisplaytype(input$sitedisplay)
+      update_species_map(species=currentspecies(), detection_prob=currentprob2(), mapdisplaytype())
       speciesmsg({
         val = if (currentspecies() %in% sgcnbirds_wsymbol | currentspecies() == "Eastern Screech-Owl²") {str_sub(currentspecies(), 1, -2)} else {currentspecies()}
         percentsites = round((nrow(speciesdf())/124), 2)*100
@@ -2484,9 +2534,24 @@ server = function(input, output, session) {
       
       #shinyjs::show("download_button2") # show download button
       shinyjs::hide("showallbiomes") # biomes reset button hidden
+      shinyjs::hide("hist_header2") # keep histogram header hidden
+      shinyjs::hide("datehistogram2") # keep histograms hidden
+      shinyjs::hide("timehistogram2") # keep histograms hidden
       shinyjs::show("columninfoheader2") # show column info header
+      shinyjs::show("tabledescriptions2") # show table descriptions button
       shinyjs::show("columninfo2") # show column info by default
     }
+  })
+  
+  # when site display type selected, map display updated (everything else unchanged)
+  
+  # tab 2
+  observeEvent(input$sitedisplay != "", {
+    mapdisplaytype(input$sitedisplay)
+    req(input$species) # ensures that if species selectinput backspaced, code won't execute and app won't crash
+    req(input$detectionprob2) # ensures that if detectionprob selectinput backspaced, code won't execute and app won't crash
+    update_species_map(species=currentspecies(), detection_prob=currentprob2(),
+                              sitetype=mapdisplaytype())
   })
   
   # when bar clicked on plot, table updated to show biome-specific site data for selected species
@@ -2512,7 +2577,10 @@ server = function(input, output, session) {
         h4(paste0("Showing all ", biome_clicked, " sites with ", val, ":"))
       )
     })
-    
+ 
+    shinyjs::hide("hist_header2") # hide histogram header
+    shinyjs::hide("datehistogram2") # hide histograms
+    shinyjs::hide("timehistogram2") # hide histograms
     shinyjs::show("showallbiomes") # reveal reset button
   })
   
@@ -2528,6 +2596,9 @@ server = function(input, output, session) {
       )
     })
     
+    shinyjs::hide("hist_header2") # hide histogram header
+    shinyjs::hide("datehistogram2") # hide histograms
+    shinyjs::hide("timehistogram2") # hide histograms
     shinyjs::hide("showallbiomes") # reset button hidden again
   })
   
@@ -2547,6 +2618,65 @@ server = function(input, output, session) {
     }
   })
   
+  # when row clicked in data table, histograms for that site and species are shown
+  
+  # tab 2
+  observeEvent(input$speciestable_row_last_clicked, {
+    idx = input$speciestable_row_last_clicked
+    site = speciesdf()[idx, "Site Number"] %>% pull()
+    datehistogram2({
+      scale_factor = frozen_pixel_ratio()/2
+      width = if (!is.null(window_width()) && !is.na(window_width())) window_width() else 1440
+      createdatehistogram(site=site, species=currentspecies(), text_scale=scale_factor, wrap=width)
+    })
+    timehistogram2({
+      scale_factor = frozen_pixel_ratio()/2
+      width = if (!is.null(window_width()) && !is.na(window_width())) window_width() else 1440
+      createtimehistogram(site=site, species=currentspecies(), text_scale=scale_factor, wrap=width)
+    })
+    
+    hist_header2(
+      paste(h4(paste0("Bird Detections at Site ", site, 
+                      " by Date and Time of Day:")))
+    )
+    
+    shinyjs::show("hist_header2") # show histogram header
+    shinyjs::show("datehistogram2") # show histograms
+    shinyjs::show("timehistogram2") # show histograms
+  })
+  
+  # If site pin clicked on species map, app navigates to site-specific info in tab 1
+  
+  # tab 2
+  observeEvent(input$speciesmap_marker_click, {
+    site = input$speciesmap_marker_click$id
+    req(site)
+    
+    # if in fullscreen mode, exit fullscreen on the species map before switching tabs
+    shinyjs::runjs("
+      var w = HTMLWidgets.find('#speciesmap');
+      if (w) {
+        var m = w.getMap();
+        if (m && m.isFullscreen && m.isFullscreen()) { m.toggleFullscreen(); }
+      }
+      if (document.fullscreenElement) { document.exitFullscreen(); }
+    ")
+    
+    updateTabsetPanel(session, "tabs", selected = "Search by Site")
+    loadSite(site)
+    
+    # once fullscreen has exited and the tab is visible, fix the map size and re-center
+    shinyjs::delay(400, {
+      shinyjs::runjs("
+        var w = HTMLWidgets.find('#map');
+        if (w && w.getMap) { w.getMap().invalidateSize(); }
+      ")
+      update_site_map(site)
+    })
+    
+  })
+  
+  
   # outputs seen in dashboard
   
   # tab 1
@@ -2557,7 +2687,7 @@ server = function(input, output, session) {
   output$siteselection = renderUI({
     if (displayedsite() == "") {HTML(paste(h4("Select your site below:")))} else {HTML(displayedsite())}
   })
-  output$map = renderLeaflet(map())
+  output$map = renderLeaflet(globalsitemap)
   output$site_stats_header = renderUI({HTML(displayedstatsheader())})
   output$site_statistics = renderUI({HTML(displayedstats())})
   output$sitemsg = renderUI({HTML(sitemsg())})
@@ -2651,7 +2781,7 @@ server = function(input, output, session) {
   
   # tab 2
   output$spacer2 = renderUI({HTML(paste(" ", br()))})
-  output$speciesmap = renderLeaflet(req(speciesmap()))
+  output$speciesmap = renderLeaflet(globalspeciesmap)
   output$speciesselection = renderUI({
     if (input$species == "") {HTML(paste(br(), h4("")))} else {HTML(speciesmsg())}
   })
@@ -2672,6 +2802,11 @@ server = function(input, output, session) {
   #write.csv(df(), file, quote = FALSE)
   #}
   #)
+  output$hist_header2 = renderUI({HTML(hist_header2())})
+  output$datehistogram2 = renderPlot(req(datehistogram2()), 
+                                    res = 96)
+  output$timehistogram2 = renderPlot(req(timehistogram2()), 
+                                    res = 96)
   output$columninfoheader2 = renderUI({HTML(columninfoheader2())})
   output$columninfo2 = renderUI({HTML(columninfo2())})
   
@@ -2702,7 +2837,7 @@ server = function(input, output, session) {
   # overall
   output$footer = renderUI({
     HTML(paste(
-      h6("This research is made possible with support from the University of Minnesota and Minnesota's Environment and Natural Resources Trust Fund. Partners include the Minnesota Department of Natural Resources, the Minnesota Cooperative Fish and Wildlife Research Unit, Audubon Upper Mississippi River, and our citizen science volunteers and collaborators."), h6("App last updated on October 8th, 2026."), h6(HTML(glue("<em><strong>Contact us at:</strong></em> <u>soundsofnature@umn.edu</u>")))
+      h6("This research is made possible with support from the University of Minnesota and Minnesota's Environment and Natural Resources Trust Fund. Partners include the Minnesota Department of Natural Resources, the Minnesota Cooperative Fish and Wildlife Research Unit, Audubon Upper Mississippi River, and our citizen science volunteers and collaborators."), h6("App last updated on November 11th, 2026."), h6(HTML(glue("<em><strong>Contact us at:</strong></em> <u>soundsofnature@umn.edu</u>")))
     ))
   })
 }

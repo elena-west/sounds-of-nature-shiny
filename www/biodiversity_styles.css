@@ -8,12 +8,24 @@
 
 /* Main app size */
 
-body {
-  min-width: 320px;
-  max-width: 1200px;
-  height: auto;
-  margin-left: auto;
-  margin-right: auto;
+@media (max-width: 1600px) {
+  body {
+    min-width: 320px;
+    max-width: 1200px;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@media (min-width: 1601px) {
+  body {
+    min-width: 320px;
+    max-width: 1800px;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
 
 /* Hyperlink color */
@@ -291,7 +303,9 @@ ul {
   font-weight: bold;
   font-size: 18px;
   color: #6e7d22;
-  margin-left: 20px;
+  display: block;
+  margin: auto;
+  
 }
 
 /* "Github Repo" button when hovering */
@@ -944,18 +958,31 @@ table.dataTable td > u > em > a:hover {
   margin-left: 0px !important;
 }
 
-/* Maps outline */
+#datehistogram2 > img {
+  margin-left: 0px !important;
+}
+
+#timehistogram2 > img {
+  margin-left: 0px !important;
+}
+
+
+/* Maps outline and page order (prevents map buttons from covering other app elements)*/
 
 #map {
   border: 1.5px solid #c5d1cd;
   font-family: "Libre Franklin", sans-serif;
   color: #264037;
+  isolation: isolate;
+  height: 50vh !important;
 }
 
 #speciesmap {
   border: 1.5px solid #c5d1cd;
   font-family: "Libre Franklin", sans-serif;
   color: #264037;
+  isolation: isolate;
+  height: 50vh !important;
 }
 
 /* Map legends */
@@ -1097,4 +1124,9 @@ table.dataTable td > u > em > a:hover {
 
 .selectize-input.focus {
   border-color: #8fcdcc;  /* border color when dropdown active */
+}
+
+/* Radio button appearance */
+.radio input[type=radio] {
+  accent-color: #ff1e7b;
 }
