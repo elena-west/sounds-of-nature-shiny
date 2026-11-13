@@ -109,7 +109,8 @@ map_icon = makeAwesomeIcon(
 )
 
 globalspeciesmap = leaflet(options = leafletOptions(zoomSnap = 0.25,
-                                             zoomControl = FALSE)) %>% 
+                                             zoomControl = FALSE,
+                                             trackResize = FALSE)) %>% 
   setView(lng = -94, lat = 45, zoom = 6.75) %>% 
   addTiles() %>% 
   addProviderTiles("OpenStreetMap.HOT") %>%  
@@ -470,6 +471,11 @@ update_site_map = function(site = NULL) {
   }
 }
 
+zoomtositefunc = function(site) {
+  tlat = geogs %>% filter(ARU == site) %>% pull(`Township Lat`)
+  tlong = geogs %>% filter(ARU == site) %>% pull(`Township Long`)
+  return(c(tlat, tlong))
+}
 
 createbirdplot = function(site, detection_prob="60", text_scale = 1, wrap = 1440) {
   filtered_df = filtersites(site, detection_prob) %>% 
@@ -1527,7 +1533,7 @@ ui = fluidPage(
         fluidRow(
           column(6, htmlOutput("siteselection")),
           column(1),
-          column(2, hidden(actionButton(inputId = "zoomtomn", label = HTML("Zoom<br>to MN")))),
+          column(2, hidden(actionButton(inputId = "zoomtosite", label = HTML("Zoom<br>to Site")))),
           column(3, hidden(actionButton(inputId = "resetmap", label = HTML("Reset map<br>and data"))))
         ),
         br(),
@@ -1704,26 +1710,28 @@ ui = fluidPage(
     br(),
     fluidRow(
       #column(1),
-      tags$img(src='uofm_logo.png', 
-               alt = "University of Minnesota logo",
-               height = "110px",
-               align = "left"),
-      tags$img(src='enrtf_logo.png', 
-               alt = "Environment and Natural Resources Trust Fund logo",
-               height = "110px",
-               align = "left"),
-      tags$img(src='mndnr_logo.png', 
-               alt = "Minnesota Department of Natural Resources logo",
-               height = "110px",
-               align = "left"),
-      tags$img(src='mncoop_logo.png', 
-               alt = "Minnesota Cooperative Fish and Wildlife Research Unit logo",
-               height = "110px",
-               align = "left"),
-      tags$img(src='audubon_logo.png', 
-               alt = "Audubon logo",
-               height = "110px",
-               align = "left")
+      tags$div(class = "footer_logos",
+        tags$img(src='uofm_logo.png', 
+                 alt = "University of Minnesota logo",
+                 height = "110px",
+                 align = "left"),
+        tags$img(src='enrtf_logo.png', 
+                 alt = "Environment and Natural Resources Trust Fund logo",
+                 height = "110px",
+                 align = "left"),
+        tags$img(src='mndnr_logo.png', 
+                 alt = "Minnesota Department of Natural Resources logo",
+                 height = "110px",
+                 align = "left"),
+        tags$img(src='mncoop_logo.png', 
+                 alt = "Minnesota Cooperative Fish and Wildlife Research Unit logo",
+                 height = "110px",
+                 align = "left"),
+        tags$img(src='audubon_logo.png', 
+                 alt = "Audubon logo",
+                 height = "110px",
+                 align = "left")
+      )
     ),
     br(),
     br(),
@@ -1738,6 +1746,7 @@ server = function(input, output, session) {
   
   # tab 1
   currentsite = reactiveVal("")
+  latlong = reactiveVal("")
   displayedsite = reactiveVal("")
   displayedstatsheader = reactiveVal("")
   displayedstats = reactiveVal("")
@@ -1809,11 +1818,14 @@ server = function(input, output, session) {
     
     update_site_map(currentsite())
     
+    latlong = zoomtositefunc(currentsite())
+    latlong(latlong)
+    
     displayedsite(
       paste(h4(paste0("You are now exploring birds at site ", currentsite(), ":")))
     )
     
-    shinyjs::show("zoomtomn") # reveal zoom to MN button
+    shinyjs::hide("zoomtosite") # zoom to site button hidden
     shinyjs::show("resetmap") # reveal reset button
     
     displayedstatsheader(
@@ -1996,12 +2008,28 @@ server = function(input, output, session) {
     loadSite(input$map_marker_click$id)
   })
   
-  # when zoom to MN button clicked, map view zooms in/out to show whole of MN
+  # when zoom to site button clicked, map view zooms in/out to center selected site
   
   # tab 1
-  observeEvent(input$zoomtomn, {
-    leafletProxy("map") %>% setView(lng = -94, lat = 45, zoom = 6.75)
-    shinyjs::hide("zoomtomn") # zoom to MN button hidden
+  observeEvent(input$zoomtosite, {
+    req(currentsite() != "")
+    latlong = zoomtositefunc(currentsite())
+    leafletProxy("map") %>% setView(lng = latlong[2], lat = latlong[1], zoom = 14)
+    shinyjs::hide("zoomtosite") # zoom to site button hidden
+  })
+  
+  # when map is panned, show zoom to site button again
+  
+  # tab 1
+  observeEvent(input$map_center, {
+    req(currentsite() != "")
+    req(latlong() != "")  # ensure that pin has been clicked to fill latlong reactive val
+    req( abs(input$map_center$lat - latlong()[1]) > 0.001 || 
+          abs(input$map_center$lng - latlong()[2]) > 0.001 ||
+          abs(input$map_zoom - 14) > 0.01 ) # if current lat not equal to pin lat
+                 # or current long not equal to pin long or zoom not equal to 14
+    # then do below line
+    shinyjs::show("zoomtosite") # show zoom to site button again
   })
   
   # when reset map button clicked, map view shows whole of MN and resets map/data
@@ -2009,6 +2037,7 @@ server = function(input, output, session) {
   # tab 1
   observeEvent(input$resetmap, {
     update_site_map(NULL)
+    latlong("")
     displayedsite(paste(h4("Select your Site Below:")))
     displayedstatsheader("")
     displayedstats("")
@@ -2028,7 +2057,7 @@ server = function(input, output, session) {
     shinyjs::hide("columninfoheader1") # hide column info header
     shinyjs::hide("tabledescriptions1") # hide table descriptions button
     shinyjs::hide("columninfo1") # hide column info
-    shinyjs::hide("zoomtomn") # zoom to MN button hidden
+    shinyjs::hide("zoomtosite") # zoom to site button hidden
     shinyjs::hide("resetmap") # reset button hidden again
     shinyjs::hide("songbirds") # hide bird icons
     shinyjs::hide("waterfowl") # hide bird icons
@@ -2837,7 +2866,7 @@ server = function(input, output, session) {
   # overall
   output$footer = renderUI({
     HTML(paste(
-      h6("This research is made possible with support from the University of Minnesota and Minnesota's Environment and Natural Resources Trust Fund. Partners include the Minnesota Department of Natural Resources, the Minnesota Cooperative Fish and Wildlife Research Unit, Audubon Upper Mississippi River, and our citizen science volunteers and collaborators."), h6("App last updated on November 11th, 2026."), h6(HTML(glue("<em><strong>Contact us at:</strong></em> <u>soundsofnature@umn.edu</u>")))
+      h6("This research is made possible with support from the University of Minnesota and Minnesota's Environment and Natural Resources Trust Fund. Partners include the Minnesota Department of Natural Resources, the Minnesota Cooperative Fish and Wildlife Research Unit, Audubon Upper Mississippi River, and our citizen science volunteers and collaborators."), h6("App last updated on November 12th, 2026."), h6(HTML(glue("<em><strong>Contact us at:</strong></em> <u>soundsofnature@umn.edu</u>")))
     ))
   })
 }

@@ -273,9 +273,9 @@ ul {
   color: #ffe091;
 }
 
-/* "Zoom to MN" button default appearance */
+/* "Zoom to Site" button default appearance */
 
-#zoomtomn {
+#zoomtosite {
   background-color: #bdcaab;
   border-color: #264037;
   font-family: "Libre Franklin", sans-serif;
@@ -284,9 +284,9 @@ ul {
   color: #6e7d22;
 }
 
-/* "Zoom to MN" button when hovering */
+/* "Zoom to Site" button when hovering */
 
-#zoomtomn:hover {
+#zoomtosite:hover {
   background-color: #ff6b00;
   font-family: "Libre Franklin", sans-serif;
   font-weight: bold;
@@ -1044,7 +1044,7 @@ table.dataTable td > u > em > a:hover {
   padding-right: auto;
 }
 
-/* Footer text box */
+/* Footer text box and logos */
 
 #footer {
   /*padding-left: 20px;*/
@@ -1062,6 +1062,12 @@ table.dataTable td > u > em > a:hover {
 
 #footer h6 {
   line-height: 23px !important;
+}
+
+.footer_logos {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Changes font and color of selectinput text */
